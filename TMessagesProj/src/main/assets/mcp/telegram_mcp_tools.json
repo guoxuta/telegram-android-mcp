@@ -1,0 +1,2108 @@
+{
+  "schema_version": "1.0",
+  "run_id": "telegram-mcp-20260729",
+  "source_revision": "9bcf3d2769c6d3f07105a992e5d9493e33ac3348",
+  "tools": [
+    {
+      "name": "telegram.system.health",
+      "title": "读取 MCP 与应用健康状态",
+      "description": "确认应用进程、MCP 版本、登录槽位和网络状态。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.account.list",
+      "title": "列出本机账号槽位",
+      "description": "查看 Telegram 多账号槽位及安全的身份摘要。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.account.get_me",
+      "title": "读取当前账号资料",
+      "description": "读取指定账号自己的安全资料摘要。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.peer.resolve",
+      "title": "解析用户或会话引用",
+      "description": "把 username 或稳定引用解析为 Agent 可复用的 peer 引用。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "peer"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.dialog.list",
+      "title": "列出对话",
+      "description": "分页列出当前账号的私聊、群组、频道与文件夹状态。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "limit": {
+            "type": "integer",
+            "description": "返回数量上限。",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 50
+          },
+          "folder_id": {
+            "type": "integer",
+            "description": "文件夹 ID；0 为主列表，1 为归档。",
+            "minimum": 0
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.dialog.archive",
+      "title": "归档对话",
+      "description": "把指定对话移入归档文件夹。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "peer"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.dialog.list(folder_id=1) 中出现目标 peer",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.dialog.unarchive",
+      "title": "取消归档对话",
+      "description": "把指定对话移回主列表。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "peer"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.dialog.list(folder_id=0) 中出现目标 peer",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.dialog.mute",
+      "title": "静音对话",
+      "description": "按会话或话题永久静音通知。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "topic_id": {
+            "type": "integer",
+            "description": "可选话题 ID；0 表示整个会话。",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "peer"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.dialog.list 返回 muted=true",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.dialog.unmute",
+      "title": "取消静音对话",
+      "description": "恢复指定会话或话题的通知。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "topic_id": {
+            "type": "integer",
+            "description": "可选话题 ID；0 表示整个会话。",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "peer"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.dialog.list 返回 muted=false",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.dialog.pin",
+      "title": "置顶对话",
+      "description": "在主列表或归档中置顶一个会话。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "peer"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.dialog.list 返回 pinned=true",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.dialog.unpin",
+      "title": "取消置顶对话",
+      "description": "取消指定会话的置顶状态。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "peer"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.dialog.list 返回 pinned=false",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.dialog.clear_history",
+      "title": "清空对话历史",
+      "description": "保留会话但清空其消息历史，可选为双方清除。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "for_everyone": {
+            "type": "boolean",
+            "description": "有权限时是否同时为对方清除。",
+            "default": false
+          },
+          "_confirm": {
+            "type": "boolean",
+            "description": "确认执行高影响操作；必须显式为 true。",
+            "const": true
+          }
+        },
+        "required": [
+          "peer",
+          "_confirm"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": true,
+      "idempotent": true,
+      "open_world": true,
+      "confirmation_argument": "_confirm",
+      "readback_strategy": "telegram.message.history 返回空列表",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.message.history",
+      "title": "读取消息历史",
+      "description": "按 peer 和偏移量分页读取可显示的消息历史。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "limit": {
+            "type": "integer",
+            "description": "返回数量上限。",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 50
+          },
+          "offset_id": {
+            "type": "integer",
+            "description": "从该消息 ID 之前读取；0 表示最新。",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "peer"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.message.get",
+      "title": "按 ID 读取消息",
+      "description": "读取指定 peer 中一组明确消息 ID 的最新服务器对象。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "message_ids": {
+            "type": "array",
+            "description": "消息 ID。",
+            "minItems": 1,
+            "maxItems": 100,
+            "uniqueItems": true,
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "required": [
+          "peer",
+          "message_ids"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.message.scheduled_list",
+      "title": "读取定时消息",
+      "description": "列出指定会话尚未发送的定时消息。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "peer"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.message.search",
+      "title": "搜索消息",
+      "description": "在指定会话或全局按文本搜索消息。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "query": {
+            "type": "string",
+            "description": "搜索文本。",
+            "minLength": 1
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "limit": {
+            "type": "integer",
+            "description": "返回数量上限。",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 50
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.message.send_text",
+      "title": "发送文本消息",
+      "description": "向一个 peer 发送纯文本，可选回复、静默和定时发送。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "text": {
+            "type": "string",
+            "description": "UTF-8 文本；不得为空。",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "reply_to_message_id": {
+            "type": "integer",
+            "description": "可选回复消息 ID。",
+            "minimum": 1
+          },
+          "silent": {
+            "type": "boolean",
+            "description": "是否静默发送。",
+            "default": false
+          },
+          "schedule_at": {
+            "type": "string",
+            "description": "可选 ISO-8601 定时时间。",
+            "format": "date-time"
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "重试去重键；同一发送意图必须复用。",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "peer",
+          "text",
+          "idempotency_key"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": true,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.message.history 中按返回 message_id 读回精确文本",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.message.edit_text",
+      "title": "编辑文本消息",
+      "description": "编辑当前账号有权修改的文本消息。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "message_id": {
+            "type": "integer",
+            "description": "目标会话中的 Telegram 消息 ID。",
+            "minimum": 1
+          },
+          "text": {
+            "type": "string",
+            "description": "新文本。",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        },
+        "required": [
+          "peer",
+          "message_id",
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": true,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.message.history 读回 message_id 的新文本",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.message.delete",
+      "title": "删除消息",
+      "description": "删除指定消息，可选仅自己或所有人。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "message_ids": {
+            "type": "array",
+            "description": "待删除消息 ID。",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "for_everyone": {
+            "type": "boolean",
+            "description": "有权限时是否为所有人删除。",
+            "default": false
+          },
+          "_confirm": {
+            "type": "boolean",
+            "description": "确认执行高影响操作；必须显式为 true。",
+            "const": true
+          }
+        },
+        "required": [
+          "peer",
+          "message_ids",
+          "_confirm"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": true,
+      "idempotent": true,
+      "open_world": true,
+      "confirmation_argument": "_confirm",
+      "readback_strategy": "telegram.message.history 不再返回目标 message_id",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.message.forward",
+      "title": "转发消息",
+      "description": "把现有消息转发到另一个 peer。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "from_peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "to_peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "message_ids": {
+            "type": "array",
+            "description": "源消息 ID。",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "silent": {
+            "type": "boolean",
+            "description": "是否静默转发。",
+            "default": false
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "转发批次去重键。",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "from_peer",
+          "to_peer",
+          "message_ids",
+          "idempotency_key"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": true,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.message.history 在目标会话读回返回的消息 ID",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.message.reaction_set",
+      "title": "设置消息表情反应",
+      "description": "为一条消息设置单个标准 emoji 反应；空字符串用于移除自己的反应。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "message_id": {
+            "type": "integer",
+            "description": "目标会话中的 Telegram 消息 ID。",
+            "minimum": 1
+          },
+          "reaction": {
+            "type": "string",
+            "description": "标准 emoji；空字符串移除反应。",
+            "maxLength": 32
+          },
+          "add_to_recent": {
+            "type": "boolean",
+            "description": "是否加入最近反应。",
+            "default": true
+          }
+        },
+        "required": [
+          "peer",
+          "message_id",
+          "reaction"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": true,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.message.get 返回 chosen=true 的反应，或不再返回该反应",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.message.mark_read",
+      "title": "标记会话已读",
+      "description": "把会话或话题读进度推进到指定消息。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "max_message_id": {
+            "type": "integer",
+            "description": "目标会话中的 Telegram 消息 ID。",
+            "minimum": 1
+          },
+          "topic_id": {
+            "type": "integer",
+            "description": "可选话题 ID。",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "peer",
+          "max_message_id"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.dialog.list 返回更新后的 unread_count",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.message.mark_unread",
+      "title": "标记会话未读",
+      "description": "把指定会话标记为未读提醒。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "peer"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.dialog.list 返回 unread_mark=true",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.message.pin",
+      "title": "置顶消息",
+      "description": "在有权限的会话中置顶一条消息。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "message_id": {
+            "type": "integer",
+            "description": "目标会话中的 Telegram 消息 ID。",
+            "minimum": 1
+          },
+          "notify": {
+            "type": "boolean",
+            "description": "是否通知成员。",
+            "default": false
+          }
+        },
+        "required": [
+          "peer",
+          "message_id"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": true,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.message.history 返回 pinned=true",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.message.unpin",
+      "title": "取消置顶消息",
+      "description": "取消指定消息的置顶状态。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "message_id": {
+            "type": "integer",
+            "description": "目标会话中的 Telegram 消息 ID。",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "peer",
+          "message_id"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": true,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.message.history 返回 pinned=false",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.draft.get",
+      "title": "读取草稿",
+      "description": "读取会话或话题当前保存的文本草稿。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "topic_id": {
+            "type": "integer",
+            "description": "可选话题 ID。",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "peer"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.draft.set",
+      "title": "保存草稿",
+      "description": "为会话或话题保存文本草稿。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "text": {
+            "type": "string",
+            "description": "草稿文本。",
+            "maxLength": 4096
+          },
+          "topic_id": {
+            "type": "integer",
+            "description": "可选话题 ID。",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "peer",
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.draft.get 返回精确文本",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.draft.clear",
+      "title": "清除草稿",
+      "description": "清空会话或话题草稿。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "topic_id": {
+            "type": "integer",
+            "description": "可选话题 ID。",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "peer"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.draft.get 返回 exists=false",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.contact.list",
+      "title": "列出 Telegram 联系人",
+      "description": "列出云端联系人，不读取 Android 通讯录。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "limit": {
+            "type": "integer",
+            "description": "返回数量上限。",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 50
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.contact.search",
+      "title": "搜索用户和联系人",
+      "description": "按关键词搜索 Telegram 用户、群组和已有联系人。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "query": {
+            "type": "string",
+            "description": "姓名或 username 关键词。",
+            "minLength": 1
+          },
+          "limit": {
+            "type": "integer",
+            "description": "返回数量上限。",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 50
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.contact.blocked_list",
+      "title": "列出已封禁 peer",
+      "description": "分页读取当前账号的封禁列表。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "offset": {
+            "type": "integer",
+            "description": "分页偏移。",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "description": "返回数量上限。",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 50
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.contact.block",
+      "title": "封禁 peer",
+      "description": "阻止指定用户或频道继续联系当前账号。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "_confirm": {
+            "type": "boolean",
+            "description": "确认执行高影响操作；必须显式为 true。",
+            "const": true
+          }
+        },
+        "required": [
+          "peer",
+          "_confirm"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": true,
+      "idempotent": true,
+      "open_world": true,
+      "confirmation_argument": "_confirm",
+      "readback_strategy": "telegram.peer.resolve 返回 blocked=true",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.contact.unblock",
+      "title": "解除封禁 peer",
+      "description": "恢复指定用户或频道与当前账号的联系权限。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "peer"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": true,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.peer.resolve 返回 blocked=false",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.chat.create_group",
+      "title": "创建普通群组",
+      "description": "用明确成员列表创建 Telegram 群组。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "title": {
+            "type": "string",
+            "description": "群组标题。",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "members": {
+            "type": "array",
+            "description": "初始成员 peer。",
+            "minItems": 1,
+            "maxItems": 200,
+            "items": {
+              "type": "string",
+              "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "title",
+          "members"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": false,
+      "open_world": true,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.dialog.list 出现返回的 chat peer",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.chat.create_channel",
+      "title": "创建频道或超级群组",
+      "description": "创建广播频道或超级群组并设置标题和简介。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "title": {
+            "type": "string",
+            "description": "标题。",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "about": {
+            "type": "string",
+            "description": "简介。",
+            "maxLength": 255
+          },
+          "kind": {
+            "type": "string",
+            "description": "channel 为广播频道，supergroup 为超级群组。",
+            "enum": [
+              "channel",
+              "supergroup"
+            ]
+          }
+        },
+        "required": [
+          "title",
+          "kind"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": false,
+      "open_world": true,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.dialog.list 出现返回的 channel peer",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.chat.get",
+      "title": "读取群组或频道完整资料",
+      "description": "读取群组、超级群组或频道的简介、人数、权限和置顶摘要。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "peer"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.chat.members_list",
+      "title": "列出群组或频道成员",
+      "description": "分页读取群组、超级群组或频道中当前账号有权查看的成员。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "offset": {
+            "type": "integer",
+            "description": "分页偏移。",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "description": "返回数量上限。",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 50
+          },
+          "query": {
+            "type": "string",
+            "description": "可选成员姓名或 username 搜索词。",
+            "maxLength": 256
+          }
+        },
+        "required": [
+          "peer"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.chat.update_title",
+      "title": "修改群组或频道标题",
+      "description": "修改有管理权限的 chat 标题。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "description": "新标题。",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "peer",
+          "title"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": true,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.peer.resolve 返回新标题",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.chat.update_about",
+      "title": "修改群组或频道简介",
+      "description": "修改有管理权限的 chat 简介。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "about": {
+            "type": "string",
+            "description": "新简介；空字符串用于清除。",
+            "maxLength": 255
+          }
+        },
+        "required": [
+          "peer",
+          "about"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": true,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.chat.get 返回新简介",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.chat.leave",
+      "title": "退出群组或频道",
+      "description": "让当前账号退出指定群组或频道。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "_confirm": {
+            "type": "boolean",
+            "description": "确认执行高影响操作；必须显式为 true。",
+            "const": true
+          }
+        },
+        "required": [
+          "peer",
+          "_confirm"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": true,
+      "idempotent": true,
+      "open_world": true,
+      "confirmation_argument": "_confirm",
+      "readback_strategy": "telegram.peer.resolve 返回 left=true 或 dialog 不再可见",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.chat.join_public",
+      "title": "加入公开频道或群组",
+      "description": "解析公开 username 并加入对应频道/群组。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "peer": {
+            "type": "string",
+            "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。",
+            "minLength": 1
+          },
+          "_confirm": {
+            "type": "boolean",
+            "description": "确认执行高影响操作；必须显式为 true。",
+            "const": true
+          }
+        },
+        "required": [
+          "peer",
+          "_confirm"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": true,
+      "idempotent": true,
+      "open_world": true,
+      "confirmation_argument": "_confirm",
+      "readback_strategy": "telegram.dialog.list 出现目标 peer 且 left=false",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.settings.get",
+      "title": "读取 Agent 友好的本地设置",
+      "description": "读取白名单内的显示、播放、流媒体与列表设置。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "keys": {
+            "type": "array",
+            "description": "可选设置键；省略返回全部白名单键。",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "autoplay_video",
+                "autoplay_gifs",
+                "stream_media",
+                "stream_all_video",
+                "stream_mkv",
+                "save_stream_media",
+                "direct_share",
+                "inapp_camera",
+                "raise_to_speak",
+                "raise_to_listen",
+                "sort_contacts_by_name",
+                "sort_files_by_name",
+                "three_line_layout"
+              ]
+            }
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.settings.set",
+      "title": "修改 Agent 友好的本地设置",
+      "description": "幂等修改白名单内的本地设置，不允许任意 SharedPreferences 键。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "values": {
+            "type": "object",
+            "description": "键值映射；仅接受下列白名单布尔键。",
+            "minProperties": 1,
+            "properties": {
+              "autoplay_video": {
+                "type": "boolean",
+                "description": "自动播放视频。"
+              },
+              "autoplay_gifs": {
+                "type": "boolean",
+                "description": "自动播放 GIF。"
+              },
+              "stream_media": {
+                "type": "boolean",
+                "description": "允许流式播放媒体。"
+              },
+              "stream_all_video": {
+                "type": "boolean",
+                "description": "允许流式播放所有视频。"
+              },
+              "stream_mkv": {
+                "type": "boolean",
+                "description": "允许流式播放 MKV。"
+              },
+              "save_stream_media": {
+                "type": "boolean",
+                "description": "保存流式媒体缓存。"
+              },
+              "direct_share": {
+                "type": "boolean",
+                "description": "启用 Android 直接分享目标。"
+              },
+              "inapp_camera": {
+                "type": "boolean",
+                "description": "启用应用内相机。"
+              },
+              "raise_to_speak": {
+                "type": "boolean",
+                "description": "启用抬起说话。"
+              },
+              "raise_to_listen": {
+                "type": "boolean",
+                "description": "启用抬起收听。"
+              },
+              "sort_contacts_by_name": {
+                "type": "boolean",
+                "description": "按姓名排序联系人。"
+              },
+              "sort_files_by_name": {
+                "type": "boolean",
+                "description": "按名称排序文件。"
+              },
+              "three_line_layout": {
+                "type": "boolean",
+                "description": "会话列表使用三行布局。"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "values"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.settings.get 返回精确新值",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.profile.update",
+      "title": "修改自己的姓名或简介",
+      "description": "修改当前账号的 first_name、last_name 或 about。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "first_name": {
+            "type": "string",
+            "description": "名。",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "last_name": {
+            "type": "string",
+            "description": "姓，可为空。",
+            "maxLength": 64
+          },
+          "about": {
+            "type": "string",
+            "description": "个人简介，可为空。",
+            "maxLength": 70
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": true,
+      "confirmation_argument": null,
+      "readback_strategy": "telegram.account.get_me 返回新资料",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.session.list",
+      "title": "列出登录会话",
+      "description": "列出当前账号的设备登录会话，不返回授权哈希或秘密。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "read_only": true,
+      "destructive": false,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": null,
+      "readback_strategy": null,
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    },
+    {
+      "name": "telegram.session.terminate",
+      "title": "终止登录会话",
+      "description": "终止指定的非当前设备登录会话。 返回结构化成功或可操作错误，不返回认证秘密。",
+      "tier": "preferred",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "session_id": {
+            "type": "string",
+            "description": "由 session.list 返回的短期安全引用。",
+            "minLength": 8
+          },
+          "_confirm": {
+            "type": "boolean",
+            "description": "确认执行高影响操作；必须显式为 true。",
+            "const": true
+          }
+        },
+        "required": [
+          "session_id",
+          "_confirm"
+        ],
+        "additionalProperties": false
+      },
+      "read_only": false,
+      "destructive": true,
+      "idempotent": true,
+      "open_world": false,
+      "confirmation_argument": "_confirm",
+      "readback_strategy": "telegram.session.list 不再返回目标 session_id",
+      "verification_exception": null,
+      "implementation_paths": [
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpService.java",
+        "TMessagesProj/src/main/java/org/telegram/messenger/mcp/TelegramMcpServer.java"
+      ],
+      "preferred_alternatives": []
+    }
+  ]
+}

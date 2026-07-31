@@ -1,0 +1,7 @@
+// Keep Telegram's large generated outputs off the source drive.
+gradle.beforeProject { project ->
+    def root = System.getenv('TELEGRAM_BUILD_ROOT')
+    if (root != null && !root.trim().isEmpty()) {
+        project.buildDir = new File(root, project.path.replace(':', '_'))
+    }
+}

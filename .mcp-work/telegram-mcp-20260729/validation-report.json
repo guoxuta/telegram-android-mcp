@@ -1,0 +1,2555 @@
+{
+  "$schema": "https://openai.local/schemas/flutter-mcp-validation-report-1.0.json",
+  "schema_version": "1.0",
+  "run_id": "telegram-mcp-20260729",
+  "inventory_digest": "a8422336bffc358b0e8b7a0fa716761f6aaf4c6d30f655a52c496b1b91f81466",
+  "environment": {
+    "device": "AppFlowy_API_35 / sdk_gphone64_x86_64 via WSL adb",
+    "android_api": 35,
+    "package": "org.telegram.messenger.beta",
+    "build_variant": "afatDebug",
+    "app_version": "12.9.0",
+    "source_revision": "9bcf3d2769c6d3f07105a992e5d9493e33ac3348"
+  },
+  "commands": [
+    {
+      "name": "inventory-generation",
+      "command": "python Tools/MCP/generate_capability_inventory.py . --runtime-validation runtime-validation.json",
+      "exit_code": 0,
+      "evidence": [
+        ".mcp-work\\telegram-mcp-20260729\\capability-inventory.json"
+      ]
+    },
+    {
+      "name": "unit-tests",
+      "command": "python -m unittest Tools.MCP.test_telegram_deepseek_agent",
+      "exit_code": 0,
+      "evidence": [
+        "9 tests passed"
+      ]
+    },
+    {
+      "name": "build",
+      "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+      "exit_code": 0,
+      "evidence": [
+        "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+      ]
+    },
+    {
+      "name": "install",
+      "command": "adb install --no-streaming -r -t app.apk",
+      "exit_code": 0,
+      "evidence": [
+        "package:org.telegram.messenger.beta"
+      ]
+    },
+    {
+      "name": "runtime-acceptance",
+      "command": "run-telegram-deepseek-agent.ps1 acceptance",
+      "exit_code": 0,
+      "evidence": [
+        ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "capability_id": "system.health",
+      "tool_name": "telegram.system.health",
+      "status": "passed",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.system.health"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "installed-tool-call",
+          "status": "passed",
+          "command": "telegram_mcp_acceptance.py",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.system.health"
+          ],
+          "observation": "The installed app returned the expected structured success result."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "capability_id": "account.list",
+      "tool_name": "telegram.account.list",
+      "status": "passed",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.account.list"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "installed-tool-call",
+          "status": "passed",
+          "command": "telegram_mcp_acceptance.py",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.account.list"
+          ],
+          "observation": "The installed app returned the expected structured success result."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "capability_id": "account.get_me",
+      "tool_name": "telegram.account.get_me",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.account.get_me"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "negative",
+          "name": "actionable-safe-error",
+          "status": "passed",
+          "command": "telegram_mcp_acceptance.py",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.account.get_me"
+          ],
+          "observation": "The precondition failure was structured and actionable, without a crash."
+        },
+        {
+          "layer": "runtime",
+          "name": "successful-precondition-path",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.account.get_me"
+          ],
+          "observation": "A logged-in test account or dedicated fixture is required for the success path."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "peer.resolve",
+      "tool_name": "telegram.peer.resolve",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.peer.resolve"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.peer.resolve"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "dialog.list",
+      "tool_name": "telegram.dialog.list",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.dialog.list"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.dialog.list"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "dialog.archive",
+      "tool_name": "telegram.dialog.archive",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.dialog.archive"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.dialog.archive"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "dialog.unarchive",
+      "tool_name": "telegram.dialog.unarchive",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.dialog.unarchive"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.dialog.unarchive"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "dialog.mute",
+      "tool_name": "telegram.dialog.mute",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.dialog.mute"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.dialog.mute"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "dialog.unmute",
+      "tool_name": "telegram.dialog.unmute",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.dialog.unmute"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.dialog.unmute"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "dialog.pin",
+      "tool_name": "telegram.dialog.pin",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.dialog.pin"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.dialog.pin"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "dialog.unpin",
+      "tool_name": "telegram.dialog.unpin",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.dialog.unpin"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.dialog.unpin"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "dialog.clear_history",
+      "tool_name": "telegram.dialog.clear_history",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.dialog.clear_history"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.dialog.clear_history"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "message.history",
+      "tool_name": "telegram.message.history",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.message.history"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.message.history"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "message.get",
+      "tool_name": "telegram.message.get",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.message.get"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.message.get"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "message.scheduled_list",
+      "tool_name": "telegram.message.scheduled_list",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.message.scheduled_list"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.message.scheduled_list"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "message.search",
+      "tool_name": "telegram.message.search",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.message.search"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.message.search"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "message.send_text",
+      "tool_name": "telegram.message.send_text",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.message.send_text"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.message.send_text"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "message.edit_text",
+      "tool_name": "telegram.message.edit_text",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.message.edit_text"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.message.edit_text"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "message.delete",
+      "tool_name": "telegram.message.delete",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.message.delete"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.message.delete"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "message.forward",
+      "tool_name": "telegram.message.forward",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.message.forward"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.message.forward"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "message.reaction_set",
+      "tool_name": "telegram.message.reaction_set",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.message.reaction_set"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.message.reaction_set"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "message.mark_read",
+      "tool_name": "telegram.message.mark_read",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.message.mark_read"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.message.mark_read"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "message.mark_unread",
+      "tool_name": "telegram.message.mark_unread",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.message.mark_unread"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.message.mark_unread"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "message.pin",
+      "tool_name": "telegram.message.pin",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.message.pin"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.message.pin"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "message.unpin",
+      "tool_name": "telegram.message.unpin",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.message.unpin"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.message.unpin"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "draft.get",
+      "tool_name": "telegram.draft.get",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.draft.get"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.draft.get"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "draft.set",
+      "tool_name": "telegram.draft.set",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.draft.set"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.draft.set"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "draft.clear",
+      "tool_name": "telegram.draft.clear",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.draft.clear"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.draft.clear"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "contact.list",
+      "tool_name": "telegram.contact.list",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.contact.list"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.contact.list"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "contact.search",
+      "tool_name": "telegram.contact.search",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.contact.search"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.contact.search"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "contact.blocked_list",
+      "tool_name": "telegram.contact.blocked_list",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.contact.blocked_list"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.contact.blocked_list"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "contact.block",
+      "tool_name": "telegram.contact.block",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.contact.block"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.contact.block"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "contact.unblock",
+      "tool_name": "telegram.contact.unblock",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.contact.unblock"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.contact.unblock"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "chat.create_group",
+      "tool_name": "telegram.chat.create_group",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.chat.create_group"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.chat.create_group"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "chat.create_channel",
+      "tool_name": "telegram.chat.create_channel",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.chat.create_channel"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.chat.create_channel"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "chat.get",
+      "tool_name": "telegram.chat.get",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.chat.get"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.chat.get"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "chat.members_list",
+      "tool_name": "telegram.chat.members_list",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.chat.members_list"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.chat.members_list"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "chat.update_title",
+      "tool_name": "telegram.chat.update_title",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.chat.update_title"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.chat.update_title"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "chat.update_about",
+      "tool_name": "telegram.chat.update_about",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.chat.update_about"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.chat.update_about"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "chat.leave",
+      "tool_name": "telegram.chat.leave",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.chat.leave"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.chat.leave"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "chat.join_public",
+      "tool_name": "telegram.chat.join_public",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.chat.join_public"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.chat.join_public"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "settings.get",
+      "tool_name": "telegram.settings.get",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.settings.get"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.settings.get"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "settings.set",
+      "tool_name": "telegram.settings.set",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.settings.set"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.settings.set"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "profile.update",
+      "tool_name": "telegram.profile.update",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.profile.update"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.profile.update"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "session.list",
+      "tool_name": "telegram.session.list",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.session.list"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.session.list"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    },
+    {
+      "capability_id": "session.terminate",
+      "tool_name": "telegram.session.terminate",
+      "status": "blocked",
+      "attempts": 1,
+      "checks": [
+        {
+          "layer": "contract",
+          "name": "registered-schema",
+          "status": "passed",
+          "command": "run-telegram-deepseek-agent.ps1 acceptance",
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/tools-list-and-schemas",
+            "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json#/telegram.session.terminate"
+          ],
+          "observation": "The installed app exposed a closed object schema with matching MCP metadata."
+        },
+        {
+          "layer": "build",
+          "name": "afat-debug-apk",
+          "status": "passed",
+          "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+          "evidence": [
+            "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk sha256=6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
+          ],
+          "observation": "The MCP implementation and catalog were packaged in the x86_64 debug APK."
+        },
+        {
+          "layer": "install",
+          "name": "debug-package-installed",
+          "status": "passed",
+          "command": "adb install --no-streaming -r -t app.apk",
+          "evidence": [
+            "package:org.telegram.messenger.beta",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
+          ],
+          "observation": "The debuggable beta package launched and generated its private MCP token."
+        },
+        {
+          "layer": "runtime",
+          "name": "account-or-fixture-runtime",
+          "status": "blocked",
+          "command": null,
+          "evidence": [
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/checks/account-state",
+            ".mcp-work/telegram-mcp-20260729/runtime-validation.json#/tool_evidence/telegram.session.terminate"
+          ],
+          "observation": "Only registration/schema proof is available; login or an explicit disposable fixture is required before invoking this operation."
+        }
+      ],
+      "notes": [
+        "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
+      ]
+    }
+  ],
+  "cleanup": {
+    "status": "not_run",
+    "tracked_ids": [],
+    "evidence": [
+      "Pre-login acceptance performed no writes."
+    ],
+    "warnings": [
+      "Saved Messages cleanup will run after the user logs into the isolated beta package."
+    ]
+  }
+}

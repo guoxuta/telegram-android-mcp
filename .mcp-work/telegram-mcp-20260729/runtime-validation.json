@@ -1,0 +1,438 @@
+{
+  "schema_version": 1,
+  "run_id": "telegram-runtime-20260730T074006Z",
+  "started_at": "2026-07-30T07:40:06.564896+00:00",
+  "endpoint": "http://127.0.0.1:19876/mcp",
+  "token_persisted": false,
+  "checks": [
+    {
+      "name": "unauthorized-denied",
+      "status": "passed",
+      "evidence": {
+        "http": 401
+      }
+    },
+    {
+      "name": "initialize",
+      "status": "passed",
+      "evidence": {
+        "name": "telegram-android-mcp",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "name": "tools-list-and-schemas",
+      "status": "passed",
+      "evidence": {
+        "tools": 46
+      }
+    },
+    {
+      "name": "catalog-resource",
+      "status": "passed",
+      "evidence": {
+        "tools": 46,
+        "sha256": "036256b12873ccbd35f4b15e3533e5677c50da5909acebe9b4306d081ae358a7"
+      }
+    },
+    {
+      "name": "unknown-tool-safe-error",
+      "status": "passed",
+      "evidence": {
+        "code": "TOOL_NOT_FOUND"
+      }
+    },
+    {
+      "name": "schema-and-confirmation-fail-closed",
+      "status": "passed",
+      "evidence": {
+        "cases": 4
+      }
+    },
+    {
+      "name": "account-state",
+      "status": "blocked-login",
+      "evidence": {
+        "next": "Log into the beta debug app through the trusted Telegram GUI."
+      }
+    }
+  ],
+  "tool_evidence": {
+    "telegram.system.health": {
+      "status": "runtime-verified",
+      "evidence": {
+        "server": "telegram-android-mcp",
+        "version": "0.1.0",
+        "protocol_version": "2025-03-26",
+        "package": "org.telegram.messenger.beta",
+        "tool_count": 46,
+        "selected_account": 0,
+        "network_online": true,
+        "accounts": [
+          {
+            "account": 0,
+            "activated": false,
+            "connection_state": 3
+          },
+          {
+            "account": 1,
+            "activated": false,
+            "connection_state": 2
+          },
+          {
+            "account": 2,
+            "activated": false,
+            "connection_state": 2
+          },
+          {
+            "account": 3,
+            "activated": false,
+            "connection_state": 2
+          }
+        ]
+      }
+    },
+    "telegram.account.list": {
+      "status": "runtime-verified",
+      "evidence": {
+        "accounts": [
+          {
+            "account": 0,
+            "selected": true,
+            "activated": false
+          },
+          {
+            "account": 1,
+            "selected": false,
+            "activated": false
+          },
+          {
+            "account": 2,
+            "selected": false,
+            "activated": false
+          },
+          {
+            "account": 3,
+            "selected": false,
+            "activated": false
+          }
+        ]
+      }
+    },
+    "telegram.account.get_me": {
+      "status": "runtime-verified-safe-error",
+      "evidence": {
+        "code": "NOT_LOGGED_IN"
+      }
+    },
+    "telegram.peer.resolve": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": true,
+        "destructive": false
+      }
+    },
+    "telegram.dialog.list": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": true,
+        "destructive": false
+      }
+    },
+    "telegram.dialog.archive": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.dialog.unarchive": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.dialog.mute": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.dialog.unmute": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.dialog.pin": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.dialog.unpin": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.dialog.clear_history": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": true
+      }
+    },
+    "telegram.message.history": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": true,
+        "destructive": false
+      }
+    },
+    "telegram.message.get": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": true,
+        "destructive": false
+      }
+    },
+    "telegram.message.scheduled_list": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": true,
+        "destructive": false
+      }
+    },
+    "telegram.message.search": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": true,
+        "destructive": false
+      }
+    },
+    "telegram.message.send_text": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.message.edit_text": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.message.delete": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": true
+      }
+    },
+    "telegram.message.forward": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.message.reaction_set": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.message.mark_read": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.message.mark_unread": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.message.pin": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.message.unpin": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.draft.get": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": true,
+        "destructive": false
+      }
+    },
+    "telegram.draft.set": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.draft.clear": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.contact.list": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": true,
+        "destructive": false
+      }
+    },
+    "telegram.contact.search": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": true,
+        "destructive": false
+      }
+    },
+    "telegram.contact.blocked_list": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": true,
+        "destructive": false
+      }
+    },
+    "telegram.contact.block": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": true
+      }
+    },
+    "telegram.contact.unblock": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.chat.create_group": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.chat.create_channel": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.chat.get": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": true,
+        "destructive": false
+      }
+    },
+    "telegram.chat.members_list": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": true,
+        "destructive": false
+      }
+    },
+    "telegram.chat.update_title": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.chat.update_about": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.chat.leave": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": true
+      }
+    },
+    "telegram.chat.join_public": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": true
+      }
+    },
+    "telegram.settings.get": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": true,
+        "destructive": false
+      }
+    },
+    "telegram.settings.set": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.profile.update": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": false
+      }
+    },
+    "telegram.session.list": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": true,
+        "destructive": false
+      }
+    },
+    "telegram.session.terminate": {
+      "status": "registered-schema-verified",
+      "evidence": {
+        "readOnly": false,
+        "destructive": true
+      }
+    }
+  },
+  "finished_at": "2026-07-30T07:40:10.019695+00:00",
+  "summary": {
+    "checks": 7,
+    "passed": 6,
+    "blocked_login": 1,
+    "failed": 0,
+    "runtime_tool_evidence": 46
+  }
+}
