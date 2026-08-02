@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-30T07:45:20.883658+00:00",
+  "generatedAt": "2026-08-01T18:00:25.705439+00:00",
   "tools": [
     {
       "name": "telegram.account.get_me",
@@ -35,16 +35,911 @@
       "outputType": null
     },
     {
-      "name": "telegram.chat.create_channel",
-      "title": "创建频道或超级群组",
+      "name": "telegram.bot.button_list",
+      "title": "读取消息交互按钮",
+      "domain": "bot",
+      "domainLabel": "bot",
+      "summary": "bot：从精确服务器消息读取 inline/reply 键盘的行列、类型、文本和人机接力要求，不暴露 callback 私有字节。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, message_id。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer",
+        "message_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "message_id": {
+          "type": "integer",
+          "description": "目标会话中的 Telegram 消息 ID。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.bot.button_press",
+      "title": "执行消息交互按钮",
+      "domain": "bot",
+      "domainLabel": "bot",
+      "summary": "bot：按精确消息与行列执行 callback/game/普通回复按钮或返回可信 UI 接力要求；具有本地去重。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, message_id, row, column, idempotency_key。 属于bot 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "peer",
+        "message_id",
+        "row",
+        "column",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "message_id": {
+          "type": "integer",
+          "description": "目标会话中的 Telegram 消息 ID。"
+        },
+        "row": {
+          "type": "integer",
+          "description": "从 0 开始的按钮行。"
+        },
+        "column": {
+          "type": "integer",
+          "description": "从 0 开始的按钮列。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "按钮执行去重键。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.bot.command_list",
+      "title": "列出 Bot 命令",
+      "domain": "bot",
+      "domainLabel": "bot",
+      "summary": "bot：从 Bot 完整资料读取命令、说明、简介和隐私政策链接。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：bot。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "bot"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "bot": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.bot.inline_query",
+      "title": "查询 Inline Bot",
+      "domain": "bot",
+      "domainLabel": "bot",
+      "summary": "bot：在明确会话上下文向 Inline Bot 查询结果并返回 query_id、稳定 result_id 和分页 offset。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：bot, peer。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "bot",
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "bot": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "query": {
+          "type": "string",
+          "description": "查询文本。"
+        },
+        "offset": {
+          "type": "string",
+          "description": "服务器分页 offset。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.bot.inline_send",
+      "title": "发送 Inline Bot 结果",
+      "domain": "bot",
+      "domainLabel": "bot",
+      "summary": "bot：把 inline_query 返回的 query_id 和 result_id 幂等发送到明确会话。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, query_id, result_id, idempotency_key。 属于bot 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "query_id",
+        "result_id",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "query_id": {
+          "type": "string",
+          "description": "inline_query 返回的 64 位 query ID。"
+        },
+        "result_id": {
+          "type": "string",
+          "description": "inline_query 返回的 result ID。"
+        },
+        "silent": {
+          "type": "boolean",
+          "description": "是否静默发送。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "发送意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.bot.start",
+      "title": "启动 Bot",
+      "domain": "bot",
+      "domainLabel": "bot",
+      "summary": "bot：在 Bot 私聊或明确群组上下文发送带 start_param 的幂等 Bot 启动请求。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：bot, idempotency_key。 属于bot 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "bot",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "bot": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "start_param": {
+          "type": "string",
+          "description": "深链启动参数；可为空。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "启动意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.business.away_set",
+      "title": "设置 Business 离开消息",
+      "domain": "business",
+      "domainLabel": "business",
+      "summary": "business：启用或停用离开消息；启用时绑定名为 away 的快捷回复、发送日程、在线状态条件和收件人策略。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：enabled。 属于business 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "enabled"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "是否启用。"
+        },
+        "shortcut_id": {
+          "type": "integer",
+          "description": "名为 away 的快捷回复 ID；启用时必填。"
+        },
+        "offline_only": {
+          "type": "boolean",
+          "description": "仅在账号离线时发送。"
+        },
+        "schedule": {
+          "type": "string",
+          "description": "发送日程。",
+          "enum": [
+            "always",
+            "outside_work_hours",
+            "custom"
+          ]
+        },
+        "start_date": {
+          "type": "integer",
+          "description": "custom 日程开始 Unix 秒。"
+        },
+        "end_date": {
+          "type": "integer",
+          "description": "custom 日程结束 Unix 秒。"
+        },
+        "recipients": {
+          "type": "object",
+          "description": "Business 自动消息目标；至少选择一个会话类别或明确用户。exclude_selected=true 时 users 表示排除项。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.business.bot_delete",
+      "title": "断开 Business Bot",
+      "domain": "business",
+      "domainLabel": "business",
+      "summary": "business：断开明确 Bot 与当前账号的 Business 连接并撤销其授权。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：bot。 属于business 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "bot"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "bot": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.business.bot_list",
+      "title": "列出已连接 Business Bot",
+      "domain": "business",
+      "domainLabel": "business",
+      "summary": "business：从服务器列出账号连接的 Business Bot、完整权限、会话范围和连接摘要。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.business.bot_set",
+      "title": "连接或更新 Business Bot",
+      "domain": "business",
+      "domainLabel": "business",
+      "summary": "business：连接支持 Business 的 Bot，或完整替换同一 Bot 的 14 项权限与会话范围；不同 Bot 必须先显式删除。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：bot, rights, recipients, replace。 属于business 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "bot",
+        "rights",
+        "recipients",
+        "replace"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "bot": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "rights": {
+          "type": "object",
+          "description": "Business Bot 权限的完整替换映射。"
+        },
+        "recipients": {
+          "type": "object",
+          "description": "Business Bot 会话范围；users 为包含项，exclude_users 为明确排除项。"
+        },
+        "replace": {
+          "type": "boolean",
+          "description": "确认完整替换权限和范围。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.business.get",
+      "title": "读取 Business 资料",
+      "domain": "business",
+      "domainLabel": "business",
+      "summary": "business：从自己的完整服务器资料读取 Business 简介、位置、营业时间、欢迎消息和离开消息状态。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.business.greeting_set",
+      "title": "设置 Business 欢迎消息",
+      "domain": "business",
+      "domainLabel": "business",
+      "summary": "business：启用或停用欢迎消息；启用时绑定名为 hello 的快捷回复、无活动天数和明确收件人策略。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：enabled。 属于business 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "enabled"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "是否启用。"
+        },
+        "shortcut_id": {
+          "type": "integer",
+          "description": "名为 hello 的快捷回复 ID；启用时必填。"
+        },
+        "no_activity_days": {
+          "type": "integer",
+          "description": "触发前无活动天数。",
+          "enum": [
+            7,
+            14,
+            21,
+            28
+          ]
+        },
+        "recipients": {
+          "type": "object",
+          "description": "Business 自动消息目标；至少选择一个会话类别或明确用户。exclude_selected=true 时 users 表示排除项。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.business.hours_set",
+      "title": "设置 Business 营业时间",
+      "domain": "business",
+      "domainLabel": "business",
+      "summary": "business：设置 IANA 时区和一周分钟轴上的已排序非重叠开放区间，或清除营业时间。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, timezone_id, weekly_open, clear。 属于business 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "timezone_id": {
+          "type": "string",
+          "description": "IANA 时区 ID。"
+        },
+        "weekly_open": {
+          "type": "array",
+          "description": "一周内开放区间，分钟 0..10080。"
+        },
+        "clear": {
+          "type": "boolean",
+          "description": "是否清除。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.business.intro_set",
+      "title": "设置 Business 简介",
+      "domain": "business",
+      "domainLabel": "business",
+      "summary": "business：设置或清除 Business 欢迎页标题和说明；贴纸保持为空以避免不透明文档引用。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, title, description, clear。 属于business 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "title": {
+          "type": "string",
+          "description": "简介标题。"
+        },
+        "description": {
+          "type": "string",
+          "description": "简介说明。"
+        },
+        "clear": {
+          "type": "boolean",
+          "description": "是否清除。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.business.link_create",
+      "title": "创建 Business 聊天链接",
+      "domain": "business",
+      "domainLabel": "business",
+      "summary": "business：创建带格式化预填消息和可选标题的幂等 Business 聊天链接。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：message, idempotency_key。 属于business 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "message",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "message": {
+          "type": "string",
+          "description": "打开链接时的预填消息。"
+        },
+        "parse_mode": {
+          "type": "string",
+          "description": "plain 或 telegram_markdown。",
+          "enum": [
+            "plain",
+            "telegram_markdown"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "description": "管理标题。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "创建意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.business.link_delete",
+      "title": "删除 Business 聊天链接",
+      "domain": "business",
+      "domainLabel": "business",
+      "summary": "business：按稳定 slug 永久删除一个 Business 聊天链接。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：slug。 属于business 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "slug"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "slug": {
+          "type": "string",
+          "description": "link_list 返回的 slug。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.business.link_edit",
+      "title": "编辑 Business 聊天链接",
+      "domain": "business",
+      "domainLabel": "business",
+      "summary": "business：按稳定 slug 修改 Business 链接的预填消息和标题。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：slug, message。 属于business 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "slug",
+        "message"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "slug": {
+          "type": "string",
+          "description": "link_list 返回的 slug。"
+        },
+        "message": {
+          "type": "string",
+          "description": "新预填消息。"
+        },
+        "parse_mode": {
+          "type": "string",
+          "description": "plain 或 telegram_markdown。",
+          "enum": [
+            "plain",
+            "telegram_markdown"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "description": "新管理标题。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.business.link_list",
+      "title": "列出 Business 聊天链接",
+      "domain": "business",
+      "domainLabel": "business",
+      "summary": "business：从服务器列出账号的 Business 聊天链接、预填消息、标题和访问次数。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.business.location_set",
+      "title": "设置 Business 位置",
+      "domain": "business",
+      "domainLabel": "business",
+      "summary": "business：设置或清除 Business 地址，并可同时设置明确经纬度，不读取设备定位。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, address, latitude, longitude, clear。 属于business 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "address": {
+          "type": "string",
+          "description": "地址文本。"
+        },
+        "latitude": {
+          "type": "number",
+          "description": "明确纬度。"
+        },
+        "longitude": {
+          "type": "number",
+          "description": "明确经度。"
+        },
+        "clear": {
+          "type": "boolean",
+          "description": "是否清除。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.call.hang_up",
+      "title": "挂断当前通话",
+      "domain": "call",
+      "domainLabel": "call",
+      "summary": "call：挂断本应用进程中的当前 Telegram 通话；不存在通话时幂等成功。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account。 属于call 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.call.history",
+      "title": "读取通话历史",
+      "domain": "call",
+      "domainLabel": "call",
+      "summary": "call：从 Telegram 服务器分页读取语音/视频通话记录、方向、时长和结束原因。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, missed_only, min_date, max_date, offset_id, limit。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "missed_only": {
+          "type": "boolean",
+          "description": "仅返回未接来电。"
+        },
+        "min_date": {
+          "type": "integer",
+          "description": "最早 Unix 秒。"
+        },
+        "max_date": {
+          "type": "integer",
+          "description": "最晚 Unix 秒。"
+        },
+        "offset_id": {
+          "type": "integer",
+          "description": "上一页 next_offset_id。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.call.mute_set",
+      "title": "设置当前通话麦克风静音",
+      "domain": "call",
+      "domainLabel": "call",
+      "summary": "call：在已有通话中设置麦克风静音状态；不申请权限、不启动采集或发起通话。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：muted。 属于call 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "write",
+      "required": [
+        "muted"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "muted": {
+          "type": "boolean",
+          "description": "目标静音状态。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.call.status",
+      "title": "读取当前通话状态",
+      "domain": "call",
+      "domainLabel": "call",
+      "summary": "call：读取本应用进程当前 VoIP 服务状态、通话 peer、麦克风静音和视频可用性。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.admin_log",
+      "title": "读取管理员日志",
       "domain": "chat",
       "domainLabel": "群组与频道",
-      "summary": "群组与频道：创建广播频道或超级群组并设置标题和简介。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：title, kind。",
+      "summary": "群组与频道：分页读取频道或超级群组的服务端管理员事件摘要。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
       "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "query": {
+          "type": "string",
+          "description": "事件搜索文本。"
+        },
+        "max_id": {
+          "type": "integer",
+          "description": "最大事件 ID。"
+        },
+        "min_id": {
+          "type": "integer",
+          "description": "最小事件 ID。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.anti_spam_set",
+      "title": "设置超级群组反垃圾",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：启用或关闭 Telegram 原生超级群组反垃圾系统。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, enabled。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "enabled"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "目标反垃圾状态。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.auto_delete_set",
+      "title": "设置 chat 自动删除",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：设置群组或频道新消息自动删除周期；0 关闭。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, seconds。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "seconds"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "seconds": {
+          "type": "integer",
+          "description": "自动删除秒数；0 关闭。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.boost_status",
+      "title": "读取 chat 助力状态",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：读取频道或超级群组的助力等级、计数、下一等级、受众和当前账号助力槽。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.create_channel",
+      "title": "创建频道、超级群组或论坛",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：创建广播频道、超级群组或启用 forum 标志的论坛并设置标题和简介。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：title, kind, idempotency_key。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "external-or-network",
       "required": [
         "title",
-        "kind"
+        "kind",
+        "idempotency_key"
       ],
       "arguments": {
         "account": {
@@ -61,11 +956,16 @@
         },
         "kind": {
           "type": "string",
-          "description": "channel 为广播频道，supergroup 为超级群组。",
+          "description": "channel 为广播频道，supergroup 为超级群组，forum 为论坛超级群组。",
           "enum": [
             "channel",
-            "supergroup"
+            "supergroup",
+            "forum"
           ]
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "创建意图去重键。"
         }
       },
       "preferredAlternatives": [],
@@ -77,12 +977,13 @@
       "title": "创建普通群组",
       "domain": "chat",
       "domainLabel": "群组与频道",
-      "summary": "群组与频道：用明确成员列表创建 Telegram 群组。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：title, members。",
-      "tier": "preferred",
+      "summary": "群组与频道：用明确成员列表创建 Telegram 群组。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：title, members, idempotency_key。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "external-or-network",
       "required": [
         "title",
-        "members"
+        "members",
+        "idempotency_key"
       ],
       "arguments": {
         "account": {
@@ -96,6 +997,40 @@
         "members": {
           "type": "array",
           "description": "初始成员 peer。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "创建意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.delete_owned",
+      "title": "删除自己创建的群组或频道",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：仅当当前账号是 creator 时永久删除目标群组、频道、超级群组或论坛。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
         }
       },
       "preferredAlternatives": [],
@@ -128,12 +1063,164 @@
       "outputType": null
     },
     {
+      "name": "telegram.chat.history_visible_set",
+      "title": "设置新成员历史可见性",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：设置新加入超级群组的成员能否看到加入前的消息历史。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, visible。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "visible"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "visible": {
+          "type": "boolean",
+          "description": "新成员是否可见加入前历史。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.invite_create",
+      "title": "创建邀请链接",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：创建具有明确有效期、次数、审批和标题的邀请链接。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, idempotency_key。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "expire_date": {
+          "type": "integer",
+          "description": "未来 Unix 时间；0 永久。"
+        },
+        "usage_limit": {
+          "type": "integer",
+          "description": "使用上限；0 不限。"
+        },
+        "request_needed": {
+          "type": "boolean",
+          "description": "是否需要管理员审批。"
+        },
+        "title": {
+          "type": "string",
+          "description": "管理员可见标题。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "创建意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.invite_list",
+      "title": "列出邀请链接",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：分页读取当前管理员创建的有效或已撤销邀请链接。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "revoked": {
+          "type": "boolean",
+          "description": "是否读取已撤销链接。"
+        },
+        "offset_date": {
+          "type": "integer",
+          "description": "分页日期。"
+        },
+        "offset_link": {
+          "type": "string",
+          "description": "分页链接。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.invite_revoke",
+      "title": "撤销邀请链接",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：撤销一个明确邀请链接并验证其 revoked 状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, link。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "peer",
+        "link"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "link": {
+          "type": "string",
+          "description": "待撤销的完整邀请链接。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
       "name": "telegram.chat.join_public",
       "title": "加入公开频道或群组",
       "domain": "chat",
       "domainLabel": "群组与频道",
-      "summary": "群组与频道：解析公开 username 并加入对应频道/群组。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
-      "tier": "preferred",
+      "summary": "群组与频道：解析公开 username 并加入对应频道/群组。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "destructive/confirmation-required",
       "required": [
         "peer"
@@ -158,12 +1245,93 @@
       "outputType": null
     },
     {
+      "name": "telegram.chat.join_request_decide",
+      "title": "审批入群申请",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：批准或拒绝一个明确用户的待处理入群申请。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, user, approve。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "peer",
+        "user",
+        "approve"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "user": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "approve": {
+          "type": "boolean",
+          "description": "true 批准，false 拒绝。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.join_request_list",
+      "title": "列出待审批入群申请",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：分页读取群组或频道尚待处理的加入申请。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "query": {
+          "type": "string",
+          "description": "可选申请人搜索词。"
+        },
+        "offset_date": {
+          "type": "integer",
+          "description": "分页日期。"
+        },
+        "offset_user": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
       "name": "telegram.chat.leave",
       "title": "退出群组或频道",
       "domain": "chat",
       "domainLabel": "群组与频道",
-      "summary": "群组与频道：让当前账号退出指定群组或频道。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
-      "tier": "preferred",
+      "summary": "群组与频道：让当前账号退出指定群组或频道。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "destructive/confirmation-required",
       "required": [
         "peer"
@@ -176,6 +1344,239 @@
         "peer": {
           "type": "string",
           "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.linked_set",
+      "title": "设置频道讨论组",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：把广播频道链接到一个超级群组，或用空 group_peer 解除链接。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, group_peer。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "peer",
+        "group_peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "group_peer": {
+          "type": "string",
+          "description": "超级群组引用；空字符串解除链接。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.member_add",
+      "title": "添加群组或频道成员",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：把明确用户加入有权限管理的群组或频道。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, member。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "member"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "member": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "history_limit": {
+          "type": "integer",
+          "description": "普通群组可见历史条数。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.member_admin_set",
+      "title": "设置成员管理员角色",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：提升或撤销成员管理员，并为超级群组/频道设置细粒度权利。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, member。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "peer",
+        "member"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "member": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "admin": {
+          "type": "boolean",
+          "description": "true 提升，false 撤销。"
+        },
+        "rights": {
+          "type": "object",
+          "description": "管理员权限的完整显式布尔映射。"
+        },
+        "rank": {
+          "type": "string",
+          "description": "可选管理员头衔。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.member_get",
+      "title": "读取精确成员状态",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：从服务器读取某个用户在群组或频道中的成员、封禁、角色和权限状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, member。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer",
+        "member"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "member": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.member_remove",
+      "title": "移除或封禁成员",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：从群组/频道移除用户，可选择保留封禁状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, member。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "peer",
+        "member"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "member": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "ban": {
+          "type": "boolean",
+          "description": "移除后是否保持封禁。"
+        },
+        "revoke_history": {
+          "type": "boolean",
+          "description": "普通群组是否撤销该成员历史。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.member_restrict",
+      "title": "设置成员限制",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：合并修改超级群组/频道成员的发送、媒体和管理允许项。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, member, allowed。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "peer",
+        "member",
+        "allowed"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "member": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "allowed": {
+          "type": "object",
+          "description": "仅覆盖明确提供的成员允许项；未提供字段保持服务器现值。"
+        },
+        "until_date": {
+          "type": "integer",
+          "description": "限制截止 Unix 时间；0 永久。"
         },
         "_confirm": {
           "type": "boolean",
@@ -225,12 +1626,316 @@
       "outputType": null
     },
     {
+      "name": "telegram.chat.participants_hidden_set",
+      "title": "设置隐藏超级群组成员",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：启用或关闭普通成员不可见完整成员列表。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, enabled。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "enabled"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "目标隐藏状态。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.permissions_get",
+      "title": "读取默认成员权限",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：从服务器读取群组或频道的默认成员允许项。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.permissions_set",
+      "title": "修改默认成员权限",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：合并修改群组或频道的默认成员允许项。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, allowed。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "peer",
+        "allowed"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "allowed": {
+          "type": "object",
+          "description": "仅覆盖明确提供的成员允许项；未提供字段保持服务器现值。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.photo_clear",
+      "title": "清除群组或频道头像",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：清除明确群组或频道的当前头像。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.photo_upload",
+      "title": "上传群组或频道头像",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：从 MCP 私有暂存区上传图片并设置为明确群组或频道的头像。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, file_ref, idempotency_key。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "file_ref",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "file_ref": {
+          "type": "string",
+          "description": "由 Telegram MCP 私有暂存区返回的文件引用。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "头像更新意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.reactions_get",
+      "title": "读取 chat 反应策略",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：从服务器完整资料读取群组或频道允许的表情反应、数量上限和付费反应状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.reactions_set",
+      "title": "设置 chat 反应策略",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：设置群组或频道允许的全部、部分或禁用反应，并可设置自定义表情、数量上限和付费反应。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, mode。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "mode"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "mode": {
+          "type": "string",
+          "description": "none、all 或 some。",
+          "enum": [
+            "none",
+            "all",
+            "some"
+          ]
+        },
+        "reactions": {
+          "type": "array",
+          "description": "some 模式的唯一 emoji 或 custom:<document_id> 字符串。"
+        },
+        "allow_custom": {
+          "type": "boolean",
+          "description": "all 模式是否允许任意自定义 emoji。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "可选反应数量上限。"
+        },
+        "paid_enabled": {
+          "type": "boolean",
+          "description": "可选付费反应状态。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.signatures_set",
+      "title": "设置频道消息签名",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：设置广播频道消息签名及签名资料展示。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, enabled。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "enabled"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "是否显示消息签名。"
+        },
+        "profiles": {
+          "type": "boolean",
+          "description": "是否显示签名者资料；仅 enabled=true 有效。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.chat.slow_mode_set",
+      "title": "设置超级群组慢速模式",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：把超级群组慢速模式设为 Telegram 支持的明确秒数。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, seconds。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "seconds"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "seconds": {
+          "type": "integer",
+          "description": "0、10、30、60、300、900 或 3600。",
+          "enum": [
+            0,
+            10,
+            30,
+            60,
+            300,
+            900,
+            3600
+          ]
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
       "name": "telegram.chat.update_about",
       "title": "修改群组或频道简介",
       "domain": "chat",
       "domainLabel": "群组与频道",
-      "summary": "群组与频道：修改有管理权限的 chat 简介。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, about。",
-      "tier": "preferred",
+      "summary": "群组与频道：修改有管理权限的 chat 简介。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, about。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "external-or-network",
       "required": [
         "peer",
@@ -259,8 +1964,8 @@
       "title": "修改群组或频道标题",
       "domain": "chat",
       "domainLabel": "群组与频道",
-      "summary": "群组与频道：修改有管理权限的 chat 标题。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, title。",
-      "tier": "preferred",
+      "summary": "群组与频道：修改有管理权限的 chat 标题。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, title。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "external-or-network",
       "required": [
         "peer",
@@ -285,12 +1990,42 @@
       "outputType": null
     },
     {
+      "name": "telegram.chat.username_set",
+      "title": "设置 chat 公开用户名",
+      "domain": "chat",
+      "domainLabel": "群组与频道",
+      "summary": "群组与频道：设置或清除频道/超级群组公开 username。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, username。 属于创建、加入、退出及资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "username"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "username": {
+          "type": "string",
+          "description": "新 username；空字符串清除。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
       "name": "telegram.contact.block",
       "title": "封禁 peer",
       "domain": "contact",
       "domainLabel": "联系人",
-      "summary": "联系人：阻止指定用户或频道继续联系当前账号。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
-      "tier": "preferred",
+      "summary": "联系人：阻止指定用户或频道继续联系当前账号。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。 属于联系人检索、屏蔽与解除屏蔽的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "destructive/confirmation-required",
       "required": [
         "peer"
@@ -335,6 +2070,61 @@
         "limit": {
           "type": "integer",
           "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.contact.delete",
+      "title": "删除云端联系人",
+      "domain": "contact",
+      "domainLabel": "联系人",
+      "summary": "联系人：从 Telegram 云端联系人中永久移除一个用户；不会删除双方聊天。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：user。 属于联系人检索、屏蔽与解除屏蔽的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "user"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "user": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.contact.get",
+      "title": "读取云端联系人",
+      "domain": "contact",
+      "domainLabel": "联系人",
+      "summary": "联系人：从 Telegram 云端联系人全集精确读取一个用户及其联系人姓名。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：user。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "user"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "user": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
         }
       },
       "preferredAlternatives": [],
@@ -387,6 +2177,14 @@
         "limit": {
           "type": "integer",
           "description": "返回数量上限。"
+        },
+        "include_broadcasts": {
+          "type": "boolean",
+          "description": "是否包含广播频道。"
+        },
+        "include_bots": {
+          "type": "boolean",
+          "description": "是否包含机器人。"
         }
       },
       "preferredAlternatives": [],
@@ -398,8 +2196,8 @@
       "title": "解除封禁 peer",
       "domain": "contact",
       "domainLabel": "联系人",
-      "summary": "联系人：恢复指定用户或频道与当前账号的联系权限。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
-      "tier": "preferred",
+      "summary": "联系人：恢复指定用户或频道与当前账号的联系权限。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。 属于联系人检索、屏蔽与解除屏蔽的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "external-or-network",
       "required": [
         "peer"
@@ -419,12 +2217,51 @@
       "outputType": null
     },
     {
+      "name": "telegram.contact.upsert",
+      "title": "新增或修改云端联系人",
+      "domain": "contact",
+      "domainLabel": "联系人",
+      "summary": "联系人：按用户写入完整联系人姓名；存在时修改，不存在时新增。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：user, first_name, idempotency_key。 属于联系人检索、屏蔽与解除屏蔽的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "user",
+        "first_name",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "user": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "first_name": {
+          "type": "string",
+          "description": "联系人名字。"
+        },
+        "last_name": {
+          "type": "string",
+          "description": "联系人姓氏；空字符串清除。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "写入意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
       "name": "telegram.dialog.archive",
       "title": "归档对话",
       "domain": "dialog",
       "domainLabel": "会话",
       "summary": "会话：把指定对话移入归档文件夹。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
-      "tier": "preferred",
+      "tier": "standard",
       "risk": "write",
       "required": [
         "peer"
@@ -448,8 +2285,8 @@
       "title": "清空对话历史",
       "domain": "dialog",
       "domainLabel": "会话",
-      "summary": "会话：保留会话但清空其消息历史，可选为双方清除。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
-      "tier": "preferred",
+      "summary": "会话：保留会话但清空其消息历史，可选为双方清除。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。 属于会话列表、归档、静音和置顶的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "destructive/confirmation-required",
       "required": [
         "peer"
@@ -478,11 +2315,36 @@
       "outputType": null
     },
     {
+      "name": "telegram.dialog.get",
+      "title": "读取精确对话状态",
+      "domain": "dialog",
+      "domainLabel": "会话",
+      "summary": "会话：从服务器读取单个对话的文件夹、置顶、未读和通知状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
       "name": "telegram.dialog.list",
       "title": "列出对话",
       "domain": "dialog",
       "domainLabel": "会话",
-      "summary": "会话：分页列出当前账号的私聊、群组、频道与文件夹状态。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, limit, folder_id。",
+      "summary": "会话：分页列出当前账号的私聊、群组、频道与文件夹状态。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, limit, folder_id, offset_id, offset_date, offset_peer。",
       "tier": "preferred",
       "risk": "read-only",
       "required": [],
@@ -498,6 +2360,18 @@
         "folder_id": {
           "type": "integer",
           "description": "文件夹 ID；0 为主列表，1 为归档。"
+        },
+        "offset_id": {
+          "type": "integer",
+          "description": "上一页最后一条消息 ID；首页为 0。"
+        },
+        "offset_date": {
+          "type": "integer",
+          "description": "上一页最后一条消息的 Unix 秒时间；首页为 0。"
+        },
+        "offset_peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
         }
       },
       "preferredAlternatives": [],
@@ -510,7 +2384,7 @@
       "domain": "dialog",
       "domainLabel": "会话",
       "summary": "会话：按会话或话题永久静音通知。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
-      "tier": "preferred",
+      "tier": "standard",
       "risk": "write",
       "required": [
         "peer"
@@ -539,7 +2413,7 @@
       "domain": "dialog",
       "domainLabel": "会话",
       "summary": "会话：在主列表或归档中置顶一个会话。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
-      "tier": "preferred",
+      "tier": "standard",
       "risk": "write",
       "required": [
         "peer"
@@ -564,7 +2438,7 @@
       "domain": "dialog",
       "domainLabel": "会话",
       "summary": "会话：把指定对话移回主列表。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
-      "tier": "preferred",
+      "tier": "standard",
       "risk": "write",
       "required": [
         "peer"
@@ -589,7 +2463,7 @@
       "domain": "dialog",
       "domainLabel": "会话",
       "summary": "会话：恢复指定会话或话题的通知。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
-      "tier": "preferred",
+      "tier": "standard",
       "risk": "write",
       "required": [
         "peer"
@@ -618,7 +2492,7 @@
       "domain": "dialog",
       "domainLabel": "会话",
       "summary": "会话：取消指定会话的置顶状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
-      "tier": "preferred",
+      "tier": "standard",
       "risk": "write",
       "required": [
         "peer"
@@ -643,7 +2517,7 @@
       "domain": "draft",
       "domainLabel": "草稿",
       "summary": "草稿：清空会话或话题草稿。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
-      "tier": "preferred",
+      "tier": "standard",
       "risk": "write",
       "required": [
         "peer"
@@ -701,7 +2575,7 @@
       "domain": "draft",
       "domainLabel": "草稿",
       "summary": "草稿：为会话或话题保存文本草稿。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, text。",
-      "tier": "preferred",
+      "tier": "standard",
       "risk": "write",
       "required": [
         "peer",
@@ -723,6 +2597,654 @@
         "topic_id": {
           "type": "integer",
           "description": "可选话题 ID。"
+        },
+        "replace": {
+          "type": "boolean",
+          "description": "原草稿含富状态时是否明确允许覆盖。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.file.delete",
+      "title": "删除 MCP 暂存文件",
+      "domain": "file",
+      "domainLabel": "file",
+      "summary": "file：删除 APP 私有 MCP 暂存文件及其元数据。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：file_ref。 属于file 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "file_ref"
+      ],
+      "arguments": {
+        "file_ref": {
+          "type": "string",
+          "description": "由 Telegram MCP 私有暂存区返回的文件引用。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.file.download_message",
+      "title": "下载消息附件到暂存区",
+      "domain": "file",
+      "domainLabel": "file",
+      "summary": "file：下载指定消息的文档、音视频或照片并复制到受限私有暂存区。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, message_id。",
+      "tier": "standard",
+      "risk": "write",
+      "required": [
+        "peer",
+        "message_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "message_id": {
+          "type": "integer",
+          "description": "目标会话中的 Telegram 消息 ID。"
+        },
+        "scheduled": {
+          "type": "boolean",
+          "description": "是否读取定时消息附件。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.file.get",
+      "title": "读取 MCP 暂存文件元数据",
+      "domain": "file",
+      "domainLabel": "file",
+      "summary": "file：按稳定 file_ref 读取私有暂存文件的完整性元数据。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：file_ref。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "file_ref"
+      ],
+      "arguments": {
+        "file_ref": {
+          "type": "string",
+          "description": "由 Telegram MCP 私有暂存区返回的文件引用。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.file.list",
+      "title": "列出 MCP 暂存文件",
+      "domain": "file",
+      "domainLabel": "file",
+      "summary": "file：列出 APP 私有、大小受限的 MCP 文件暂存区，不暴露任意 Android 路径。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：limit。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.file.put_base64",
+      "title": "把内容放入私有暂存区",
+      "domain": "file",
+      "domainLabel": "file",
+      "summary": "file：把明确提供的 Base64 内容原子写入 APP 私有暂存区。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：name, mime_type, base64。",
+      "tier": "standard",
+      "risk": "write",
+      "required": [
+        "name",
+        "mime_type",
+        "base64"
+      ],
+      "arguments": {
+        "name": {
+          "type": "string",
+          "description": "不含路径分隔符的文件名。"
+        },
+        "mime_type": {
+          "type": "string",
+          "description": "明确 MIME 类型。"
+        },
+        "base64": {
+          "type": "string",
+          "description": "最多 512 KiB 解码内容的 Base64；更大文件使用 upload_begin/append/commit。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.file.read_base64",
+      "title": "分块读取暂存文件",
+      "domain": "file",
+      "domainLabel": "file",
+      "summary": "file：按最多 1 MiB 的窗口读取私有暂存文件，不暴露文件系统路径。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：file_ref。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "file_ref"
+      ],
+      "arguments": {
+        "file_ref": {
+          "type": "string",
+          "description": "由 Telegram MCP 私有暂存区返回的文件引用。"
+        },
+        "offset": {
+          "type": "integer",
+          "description": "字节偏移。"
+        },
+        "length": {
+          "type": "integer",
+          "description": "读取字节数。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.file.upload_append",
+      "title": "追加可续传文件分块",
+      "domain": "file",
+      "domainLabel": "file",
+      "summary": "file：按精确 offset 追加不超过 512 KiB 的已验证分块。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：upload_ref, offset, base64, chunk_sha256。",
+      "tier": "standard",
+      "risk": "write",
+      "required": [
+        "upload_ref",
+        "offset",
+        "base64",
+        "chunk_sha256"
+      ],
+      "arguments": {
+        "upload_ref": {
+          "type": "string",
+          "description": "Opaque resumable-upload reference returned by telegram.file.upload_begin."
+        },
+        "offset": {
+          "type": "integer",
+          "description": "精确字节偏移。"
+        },
+        "base64": {
+          "type": "string",
+          "description": "最大 512 KiB 解码内容。"
+        },
+        "chunk_sha256": {
+          "type": "string",
+          "description": "分块 SHA-256。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.file.upload_begin",
+      "title": "开始可续传文件上传",
+      "domain": "file",
+      "domainLabel": "file",
+      "summary": "file：创建或恢复 APP 私有分块上传会话。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：name, mime_type, total_size, sha256。",
+      "tier": "standard",
+      "risk": "write",
+      "required": [
+        "name",
+        "mime_type",
+        "total_size",
+        "sha256"
+      ],
+      "arguments": {
+        "name": {
+          "type": "string",
+          "description": "安全文件名。"
+        },
+        "mime_type": {
+          "type": "string",
+          "description": "MIME 类型。"
+        },
+        "total_size": {
+          "type": "integer",
+          "description": "完整文件字节数。"
+        },
+        "sha256": {
+          "type": "string",
+          "description": "完整文件 SHA-256。"
+        },
+        "reopen_cancelled": {
+          "type": "boolean",
+          "description": "仅显式为 true 时重开相同身份的已取消会话。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.file.upload_cancel",
+      "title": "取消可续传文件上传",
+      "domain": "file",
+      "domainLabel": "file",
+      "summary": "file：删除未提交 part 与会话，保留已提交 file_ref。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：upload_ref。 属于file 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "upload_ref"
+      ],
+      "arguments": {
+        "upload_ref": {
+          "type": "string",
+          "description": "Opaque resumable-upload reference returned by telegram.file.upload_begin."
+        },
+        "purge_terminal": {
+          "type": "boolean",
+          "description": "显式删除 complete/cancelled tombstone；会失去后续重放能力。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.file.upload_commit",
+      "title": "提交可续传文件上传",
+      "domain": "file",
+      "domainLabel": "file",
+      "summary": "file：验证完整大小和 SHA-256 后原子生成稳定 file_ref。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：upload_ref。",
+      "tier": "standard",
+      "risk": "write",
+      "required": [
+        "upload_ref"
+      ],
+      "arguments": {
+        "upload_ref": {
+          "type": "string",
+          "description": "Opaque resumable-upload reference returned by telegram.file.upload_begin."
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.file.upload_list",
+      "title": "列出可续传上传会话",
+      "domain": "file",
+      "domainLabel": "file",
+      "summary": "file：列出活动与终态上传会话，便于恢复遗失的 upload_ref。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：limit, offset, state。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        },
+        "offset": {
+          "type": "integer",
+          "description": "分页偏移。"
+        },
+        "state": {
+          "type": "string",
+          "description": "按会话状态过滤。",
+          "enum": [
+            "any",
+            "active",
+            "complete",
+            "stale_complete",
+            "cancelled"
+          ]
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.file.upload_status",
+      "title": "读取可续传上传状态",
+      "domain": "file",
+      "domainLabel": "file",
+      "summary": "file：读取上传进度和最终文件引用。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：upload_ref。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "upload_ref"
+      ],
+      "arguments": {
+        "upload_ref": {
+          "type": "string",
+          "description": "Opaque resumable-upload reference returned by telegram.file.upload_begin."
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.folder.delete",
+      "title": "删除聊天文件夹",
+      "domain": "folder",
+      "domainLabel": "folder",
+      "summary": "folder：永久删除一个自定义文件夹；不会删除其中的聊天。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：folder_id。 属于folder 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "folder_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "folder_id": {
+          "type": "integer",
+          "description": "自定义文件夹 ID。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.folder.get",
+      "title": "读取聊天文件夹",
+      "domain": "folder",
+      "domainLabel": "folder",
+      "summary": "folder：按稳定 folder_id 精确读取一个服务器聊天文件夹。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：folder_id。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "folder_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "folder_id": {
+          "type": "integer",
+          "description": "自定义文件夹 ID。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.folder.list",
+      "title": "列出自定义聊天文件夹",
+      "domain": "folder",
+      "domainLabel": "folder",
+      "summary": "folder：从服务器读取默认及自定义聊天文件夹、完整筛选条件和排序。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.folder.reorder",
+      "title": "重排聊天文件夹",
+      "domain": "folder",
+      "domainLabel": "folder",
+      "summary": "folder：用包含全部自定义文件夹且无重复的 ID 列表原子更新排序。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：folder_ids。 属于folder 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "folder_ids"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "folder_ids": {
+          "type": "array",
+          "description": "全部自定义文件夹 ID 的目标顺序。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.folder.upsert",
+      "title": "创建或完整替换聊天文件夹",
+      "domain": "folder",
+      "domainLabel": "folder",
+      "summary": "folder：创建自定义文件夹，或在 replace=true 时原子替换指定文件夹的完整筛选规则。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：title, idempotency_key。 属于folder 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "title",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "folder_id": {
+          "type": "integer",
+          "description": "可选稳定自定义文件夹 ID；省略时分配空闲 ID。"
+        },
+        "title": {
+          "type": "string",
+          "description": "文件夹标题；Telegram 客户端最多允许 12 个 UTF-16 代码单元。"
+        },
+        "emoticon": {
+          "type": "string",
+          "description": "可选文件夹 emoji。"
+        },
+        "color": {
+          "type": "integer",
+          "description": "可选 Telegram 文件夹颜色索引。"
+        },
+        "contacts": {
+          "type": "boolean",
+          "description": "包含联系人。"
+        },
+        "non_contacts": {
+          "type": "boolean",
+          "description": "包含非联系人。"
+        },
+        "groups": {
+          "type": "boolean",
+          "description": "包含群组。"
+        },
+        "broadcasts": {
+          "type": "boolean",
+          "description": "包含频道。"
+        },
+        "bots": {
+          "type": "boolean",
+          "description": "包含机器人。"
+        },
+        "exclude_muted": {
+          "type": "boolean",
+          "description": "排除静音会话。"
+        },
+        "exclude_read": {
+          "type": "boolean",
+          "description": "排除已读会话。"
+        },
+        "exclude_archived": {
+          "type": "boolean",
+          "description": "排除已归档会话。"
+        },
+        "include_peers": {
+          "type": "array",
+          "description": "显式包含 peer。"
+        },
+        "exclude_peers": {
+          "type": "array",
+          "description": "显式排除 peer。"
+        },
+        "pinned_peers": {
+          "type": "array",
+          "description": "文件夹内置顶 peer；会自动合并到包含列表。"
+        },
+        "replace": {
+          "type": "boolean",
+          "description": "已有 folder_id 时必须显式允许完整替换。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "写入意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.gif.saved_list",
+      "title": "列出已保存 GIF",
+      "domain": "gif",
+      "domainLabel": "gif",
+      "summary": "gif：从服务器读取账号的已保存 GIF 文档。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, offset, limit。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "offset": {
+          "type": "integer",
+          "description": "零基列表 offset。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.gif.saved_set",
+      "title": "保存或移除 GIF",
+      "domain": "gif",
+      "domainLabel": "gif",
+      "summary": "gif：从精确服务器消息取得 GIF 文档，设置其云端保存状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：source_peer, source_message_id, saved。",
+      "tier": "standard",
+      "risk": "write",
+      "required": [
+        "source_peer",
+        "source_message_id",
+        "saved"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "source_peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "source_message_id": {
+          "type": "integer",
+          "description": "目标会话中的 Telegram 消息 ID。"
+        },
+        "saved": {
+          "type": "boolean",
+          "description": "true 保存，false 移除。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.gif.send_saved",
+      "title": "发送已保存 GIF",
+      "domain": "gif",
+      "domainLabel": "gif",
+      "summary": "gif：按已保存列表中的 document_id 通过 Telegram 发送助手发送 GIF。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, document_id, idempotency_key。 属于gif 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "document_id",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "document_id": {
+          "type": "string",
+          "description": "saved_list 返回的 64 位 document ID。"
+        },
+        "reply_to_message_id": {
+          "type": "integer",
+          "description": "可选回复消息 ID。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛超级群组中的目标主题 ID；省略时发送到普通会话或 General 主题。"
+        },
+        "silent": {
+          "type": "boolean",
+          "description": "是否静默发送。"
+        },
+        "schedule_at": {
+          "type": "string",
+          "description": "可选 ISO-8601 定时时间。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "发送意图去重键。"
         }
       },
       "preferredAlternatives": [],
@@ -734,8 +3256,8 @@
       "title": "删除消息",
       "domain": "message",
       "domainLabel": "消息",
-      "summary": "消息：删除指定消息，可选仅自己或所有人。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, message_ids。",
-      "tier": "preferred",
+      "summary": "消息：删除指定消息，可选仅自己或所有人。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, message_ids。 属于历史、搜索、发送、编辑、转发、删除和已读状态的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "destructive/confirmation-required",
       "required": [
         "peer",
@@ -754,6 +3276,10 @@
           "type": "array",
           "description": "待删除消息 ID。"
         },
+        "scheduled": {
+          "type": "boolean",
+          "description": "是否删除定时消息。"
+        },
         "for_everyone": {
           "type": "boolean",
           "description": "有权限时是否为所有人删除。"
@@ -769,12 +3295,59 @@
       "outputType": null
     },
     {
+      "name": "telegram.message.edit_caption",
+      "title": "编辑媒体 caption",
+      "domain": "message",
+      "domainLabel": "消息",
+      "summary": "消息：编辑有权修改的照片、视频、音频或文件 caption，支持 APP composer Markdown 实体。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, message_id, caption。 属于历史、搜索、发送、编辑、转发、删除和已读状态的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "message_id",
+        "caption"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "message_id": {
+          "type": "integer",
+          "description": "目标会话中的 Telegram 消息 ID。"
+        },
+        "caption": {
+          "type": "string",
+          "description": "新 caption；空字符串清除。"
+        },
+        "parse_mode": {
+          "type": "string",
+          "description": "plain 或 APP composer 同款 telegram_markdown。",
+          "enum": [
+            "plain",
+            "telegram_markdown"
+          ]
+        },
+        "scheduled": {
+          "type": "boolean",
+          "description": "是否编辑定时消息。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
       "name": "telegram.message.edit_text",
       "title": "编辑文本消息",
       "domain": "message",
       "domainLabel": "消息",
-      "summary": "消息：编辑当前账号有权修改的文本消息。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, message_id, text。",
-      "tier": "preferred",
+      "summary": "消息：编辑当前账号有权修改的文本消息。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, message_id, text。 属于历史、搜索、发送、编辑、转发、删除和已读状态的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "external-or-network",
       "required": [
         "peer",
@@ -797,6 +3370,22 @@
         "text": {
           "type": "string",
           "description": "新文本。"
+        },
+        "parse_mode": {
+          "type": "string",
+          "description": "plain 或 APP composer 同款 telegram_markdown。",
+          "enum": [
+            "plain",
+            "telegram_markdown"
+          ]
+        },
+        "link_preview": {
+          "type": "boolean",
+          "description": "可选链接预览策略。"
+        },
+        "scheduled": {
+          "type": "boolean",
+          "description": "是否编辑定时消息。"
         }
       },
       "preferredAlternatives": [],
@@ -808,8 +3397,8 @@
       "title": "转发消息",
       "domain": "message",
       "domainLabel": "消息",
-      "summary": "消息：把现有消息转发到另一个 peer。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：from_peer, to_peer, message_ids, idempotency_key。",
-      "tier": "preferred",
+      "summary": "消息：把现有消息转发到另一个 peer。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：from_peer, to_peer, message_ids, idempotency_key。 属于历史、搜索、发送、编辑、转发、删除和已读状态的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "external-or-network",
       "required": [
         "from_peer",
@@ -833,6 +3422,10 @@
         "message_ids": {
           "type": "array",
           "description": "源消息 ID。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛超级群组中的目标主题 ID；省略时发送到普通会话或 General 主题。"
         },
         "silent": {
           "type": "boolean",
@@ -871,6 +3464,10 @@
         "message_ids": {
           "type": "array",
           "description": "消息 ID。"
+        },
+        "scheduled": {
+          "type": "boolean",
+          "description": "是否在定时消息命名空间读取。"
         }
       },
       "preferredAlternatives": [],
@@ -897,6 +3494,10 @@
           "type": "string",
           "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
         },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛超级群组中的目标主题 ID；省略时发送到普通会话或 General 主题。"
+        },
         "limit": {
           "type": "integer",
           "description": "返回数量上限。"
@@ -916,7 +3517,7 @@
       "domain": "message",
       "domainLabel": "消息",
       "summary": "消息：把会话或话题读进度推进到指定消息。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, max_message_id。",
-      "tier": "preferred",
+      "tier": "standard",
       "risk": "write",
       "required": [
         "peer",
@@ -950,7 +3551,7 @@
       "domain": "message",
       "domainLabel": "消息",
       "summary": "消息：把指定会话标记为未读提醒。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
-      "tier": "preferred",
+      "tier": "standard",
       "risk": "write",
       "required": [
         "peer"
@@ -970,12 +3571,77 @@
       "outputType": null
     },
     {
+      "name": "telegram.message.media_search",
+      "title": "筛选共享媒体",
+      "domain": "message",
+      "domainLabel": "消息",
+      "summary": "消息：在精确会话内按照片、视频、文件、音乐、语音、GIF、链接等类型分页搜索。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "filter": {
+          "type": "string",
+          "description": "媒体过滤器。",
+          "enum": [
+            "all",
+            "photos",
+            "videos",
+            "photo_video",
+            "photo_video_documents",
+            "documents",
+            "music",
+            "voice",
+            "round_voice",
+            "round_video",
+            "gifs",
+            "links",
+            "pinned",
+            "mentions"
+          ]
+        },
+        "query": {
+          "type": "string",
+          "description": "可选内容搜索文本。"
+        },
+        "from_peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛超级群组中的目标主题 ID；省略时发送到普通会话或 General 主题。"
+        },
+        "offset_id": {
+          "type": "integer",
+          "description": "上一页末条消息 ID。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
       "name": "telegram.message.pin",
       "title": "置顶消息",
       "domain": "message",
       "domainLabel": "消息",
-      "summary": "消息：在有权限的会话中置顶一条消息。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, message_id。",
-      "tier": "preferred",
+      "summary": "消息：在有权限的会话中置顶一条消息。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, message_id。 属于历史、搜索、发送、编辑、转发、删除和已读状态的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "external-or-network",
       "required": [
         "peer",
@@ -1004,12 +3670,82 @@
       "outputType": null
     },
     {
+      "name": "telegram.message.poll_close",
+      "title": "提前关闭投票",
+      "domain": "message",
+      "domainLabel": "消息",
+      "summary": "消息：对自己有权编辑的投票或测验执行不可逆提前关闭。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, message_id。 属于历史、搜索、发送、编辑、转发、删除和已读状态的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "peer",
+        "message_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "message_id": {
+          "type": "integer",
+          "description": "目标会话中的 Telegram 消息 ID。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.message.poll_vote",
+      "title": "投票或修改投票",
+      "domain": "message",
+      "domainLabel": "消息",
+      "summary": "消息：对精确服务器投票按零基答案索引提交选项；空列表用于撤回允许修改的投票。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, message_id, answer_indices。 属于历史、搜索、发送、编辑、转发、删除和已读状态的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "message_id",
+        "answer_indices"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "message_id": {
+          "type": "integer",
+          "description": "目标会话中的 Telegram 消息 ID。"
+        },
+        "answer_indices": {
+          "type": "array",
+          "description": "按投票答案顺序的零基索引；可为空。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
       "name": "telegram.message.reaction_set",
       "title": "设置消息表情反应",
       "domain": "message",
       "domainLabel": "消息",
-      "summary": "消息：为一条消息设置单个标准 emoji 反应；空字符串用于移除自己的反应。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, message_id, reaction。",
-      "tier": "preferred",
+      "summary": "消息：为一条消息设置单个标准 emoji 反应；空字符串用于移除自己的反应。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, message_id, reaction。 属于历史、搜索、发送、编辑、转发、删除和已读状态的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "external-or-network",
       "required": [
         "peer",
@@ -1091,9 +3827,340 @@
           "type": "string",
           "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
         },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛超级群组中的目标主题 ID；省略时发送到普通会话或 General 主题。"
+        },
         "limit": {
           "type": "integer",
           "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.message.send_contact",
+      "title": "发送联系人卡片",
+      "domain": "message",
+      "domainLabel": "消息",
+      "summary": "消息：发送包含手机号和姓名的 Telegram 联系人卡片，可回复、静默或定时。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, phone_number, first_name, idempotency_key。 属于历史、搜索、发送、编辑、转发、删除和已读状态的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "phone_number",
+        "first_name",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "phone_number": {
+          "type": "string",
+          "description": "联系人手机号。"
+        },
+        "first_name": {
+          "type": "string",
+          "description": "联系人名字。"
+        },
+        "last_name": {
+          "type": "string",
+          "description": "联系人姓氏。"
+        },
+        "reply_to_message_id": {
+          "type": "integer",
+          "description": "可选回复消息 ID。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛超级群组中的目标主题 ID；省略时发送到普通会话或 General 主题。"
+        },
+        "silent": {
+          "type": "boolean",
+          "description": "是否静默发送。"
+        },
+        "schedule_at": {
+          "type": "string",
+          "description": "可选 ISO-8601 定时时间。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "发送意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.message.send_dice",
+      "title": "发送 Telegram 骰子",
+      "domain": "message",
+      "domainLabel": "消息",
+      "summary": "消息：发送账号服务器当前支持的骰子/飞镖/球类/老虎机 emoji 并返回服务器随机结果。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, idempotency_key。 属于历史、搜索、发送、编辑、转发、删除和已读状态的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "emoji": {
+          "type": "string",
+          "description": "骰子 emoji；默认 🎲。"
+        },
+        "reply_to_message_id": {
+          "type": "integer",
+          "description": "可选回复消息 ID。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛超级群组中的目标主题 ID；省略时发送到普通会话或 General 主题。"
+        },
+        "silent": {
+          "type": "boolean",
+          "description": "是否静默发送。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "发送意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.message.send_location",
+      "title": "发送位置或地点",
+      "domain": "message",
+      "domainLabel": "消息",
+      "summary": "消息：发送显式经纬度；提供 title 时发送地点卡片，不访问设备定位权限。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, latitude, longitude, idempotency_key。 属于历史、搜索、发送、编辑、转发、删除和已读状态的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "latitude",
+        "longitude",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "latitude": {
+          "type": "number",
+          "description": "纬度。"
+        },
+        "longitude": {
+          "type": "number",
+          "description": "经度。"
+        },
+        "title": {
+          "type": "string",
+          "description": "可选地点标题。"
+        },
+        "address": {
+          "type": "string",
+          "description": "可选地点地址；使用时必须有 title。"
+        },
+        "reply_to_message_id": {
+          "type": "integer",
+          "description": "可选回复消息 ID。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛超级群组中的目标主题 ID；省略时发送到普通会话或 General 主题。"
+        },
+        "silent": {
+          "type": "boolean",
+          "description": "是否静默发送。"
+        },
+        "schedule_at": {
+          "type": "string",
+          "description": "可选 ISO-8601 定时时间。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "发送意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.message.send_media",
+      "title": "发送暂存媒体或文件",
+      "domain": "message",
+      "domainLabel": "消息",
+      "summary": "消息：从私有 MCP 暂存区发送单个或最多十个照片、视频或文档。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, file_refs, idempotency_key。 属于历史、搜索、发送、编辑、转发、删除和已读状态的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "file_refs",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "file_refs": {
+          "type": "array",
+          "description": "按发送顺序排列的私有暂存文件引用。"
+        },
+        "kind": {
+          "type": "string",
+          "description": "auto 按 MIME 推断；也可强制 photo、video 或 document。",
+          "enum": [
+            "auto",
+            "photo",
+            "video",
+            "document"
+          ]
+        },
+        "caption": {
+          "type": "string",
+          "description": "第一项媒体的 caption。"
+        },
+        "caption_parse_mode": {
+          "type": "string",
+          "description": "plain 或 APP composer 同款 telegram_markdown。",
+          "enum": [
+            "plain",
+            "telegram_markdown"
+          ]
+        },
+        "reply_to_message_id": {
+          "type": "integer",
+          "description": "可选回复消息 ID。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛超级群组中的目标主题 ID；省略时发送到普通会话或 General 主题。"
+        },
+        "silent": {
+          "type": "boolean",
+          "description": "是否静默发送。"
+        },
+        "spoiler": {
+          "type": "boolean",
+          "description": "是否为媒体添加 spoiler。"
+        },
+        "schedule_at": {
+          "type": "string",
+          "description": "可选 ISO-8601 定时时间。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "媒体发送意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.message.send_poll",
+      "title": "发送投票或测验",
+      "domain": "message",
+      "domainLabel": "消息",
+      "summary": "消息：发送匿名或实名、单选或多选投票，也可发送带正确答案和解析的测验。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, question, answers, idempotency_key。 属于历史、搜索、发送、编辑、转发、删除和已读状态的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "question",
+        "answers",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "question": {
+          "type": "string",
+          "description": "问题。"
+        },
+        "answers": {
+          "type": "array",
+          "description": "2..10 个唯一答案。"
+        },
+        "anonymous": {
+          "type": "boolean",
+          "description": "是否隐藏投票者。"
+        },
+        "multiple_choice": {
+          "type": "boolean",
+          "description": "是否允许多选。"
+        },
+        "quiz": {
+          "type": "boolean",
+          "description": "是否为测验。"
+        },
+        "correct_answer": {
+          "type": "integer",
+          "description": "测验正确答案的零基索引。"
+        },
+        "solution": {
+          "type": "string",
+          "description": "测验解析。"
+        },
+        "close_period": {
+          "type": "integer",
+          "description": "0 不自动关闭，或 5..600 秒。"
+        },
+        "reply_to_message_id": {
+          "type": "integer",
+          "description": "可选回复消息 ID。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛超级群组中的目标主题 ID；省略时发送到普通会话或 General 主题。"
+        },
+        "silent": {
+          "type": "boolean",
+          "description": "是否静默发送。"
+        },
+        "schedule_at": {
+          "type": "string",
+          "description": "可选 ISO-8601 定时时间。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "发送意图去重键。"
         }
       },
       "preferredAlternatives": [],
@@ -1105,8 +4172,8 @@
       "title": "发送文本消息",
       "domain": "message",
       "domainLabel": "消息",
-      "summary": "消息：向一个 peer 发送纯文本，可选回复、静默和定时发送。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, text, idempotency_key。",
-      "tier": "preferred",
+      "summary": "消息：向一个 peer 发送纯文本或 Telegram composer Markdown，可选回复、链接预览、静默和定时发送。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, text, idempotency_key。 属于历史、搜索、发送、编辑、转发、删除和已读状态的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "external-or-network",
       "required": [
         "peer",
@@ -1126,9 +4193,25 @@
           "type": "string",
           "description": "UTF-8 文本；不得为空。"
         },
+        "parse_mode": {
+          "type": "string",
+          "description": "plain 保留原文；telegram_markdown 使用 APP 编辑器同款实体解析。",
+          "enum": [
+            "plain",
+            "telegram_markdown"
+          ]
+        },
+        "link_preview": {
+          "type": "boolean",
+          "description": "是否允许链接预览。"
+        },
         "reply_to_message_id": {
           "type": "integer",
           "description": "可选回复消息 ID。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛超级群组中的目标主题 ID；省略时发送到普通会话或 General 主题。"
         },
         "silent": {
           "type": "boolean",
@@ -1152,8 +4235,8 @@
       "title": "取消置顶消息",
       "domain": "message",
       "domainLabel": "消息",
-      "summary": "消息：取消指定消息的置顶状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, message_id。",
-      "tier": "preferred",
+      "summary": "消息：取消指定消息的置顶状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, message_id。 属于历史、搜索、发送、编辑、转发、删除和已读状态的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "external-or-network",
       "required": [
         "peer",
@@ -1171,6 +4254,399 @@
         "message_id": {
           "type": "integer",
           "description": "目标会话中的 Telegram 消息 ID。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.network.usage",
+      "title": "读取本机流量统计",
+      "domain": "network",
+      "domainLabel": "network",
+      "summary": "network：按移动网络、Wi-Fi 和漫游读取当前账号在本机的消息、媒体、文件和通话流量计数。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.network.usage_reset",
+      "title": "重置本机流量统计",
+      "domain": "network",
+      "domainLabel": "network",
+      "summary": "network：显式确认后仅重置指定账号和网络类型的本机流量计数，不影响 Telegram 云端内容。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：network。 属于network 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "network"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "network": {
+          "type": "string",
+          "description": "要重置的网络类型。",
+          "enum": [
+            "mobile",
+            "wifi",
+            "roaming"
+          ]
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.notification.global_get",
+      "title": "读取全局通知设置",
+      "domain": "notification",
+      "domainLabel": "notification",
+      "summary": "notification：从服务器读取私聊、群组、频道或 Stories 的全局静音、预览、声音和发送者显示策略。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：domain。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "domain"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "domain": {
+          "type": "string",
+          "description": "通知分类。",
+          "enum": [
+            "private",
+            "groups",
+            "channels",
+            "stories"
+          ]
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.notification.global_set",
+      "title": "设置全局通知",
+      "domain": "notification",
+      "domainLabel": "notification",
+      "summary": "notification：按字段修改私聊、群组、频道或 Stories 全局通知，服务器独立回读后同步本机 GUI 偏好。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：domain。 属于notification 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "domain"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "domain": {
+          "type": "string",
+          "description": "通知分类。",
+          "enum": [
+            "private",
+            "groups",
+            "channels",
+            "stories"
+          ]
+        },
+        "mute_until": {
+          "type": "integer",
+          "description": "非 Stories 分类的静音截止。"
+        },
+        "show_previews": {
+          "type": "boolean",
+          "description": "非 Stories 分类是否显示预览。"
+        },
+        "sound": {
+          "type": "string",
+          "description": "default、none 或 ringtone:<document-id>。"
+        },
+        "stories_muted": {
+          "type": "boolean",
+          "description": "Stories 分类是否静音。"
+        },
+        "stories_hide_sender": {
+          "type": "boolean",
+          "description": "Stories 通知是否隐藏发送者。"
+        },
+        "stories_sound": {
+          "type": "string",
+          "description": "Stories 声音。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.notification.peer_get",
+      "title": "读取会话通知设置",
+      "domain": "notification",
+      "domainLabel": "notification",
+      "summary": "notification：从服务器读取会话或论坛话题的通知例外和静音状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "可选论坛话题 ID；0 表示整个会话。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.notification.peer_set",
+      "title": "精细设置会话通知",
+      "domain": "notification",
+      "domainLabel": "notification",
+      "summary": "notification：按字段更新会话或论坛话题的静音、预览、声音和 Story 通知例外；未提供字段保持服务器现值。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。 属于notification 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "可选论坛话题 ID；0 表示整个会话。"
+        },
+        "mute_until": {
+          "type": "integer",
+          "description": "0 取消静音；Unix 秒时间戳或 2147483647 表示静音截止时间。"
+        },
+        "silent": {
+          "type": "boolean",
+          "description": "发送通知时是否静默。"
+        },
+        "show_previews": {
+          "type": "boolean",
+          "description": "是否显示消息预览。"
+        },
+        "stories_muted": {
+          "type": "boolean",
+          "description": "是否静音该 peer 的 Story 通知。"
+        },
+        "stories_hide_sender": {
+          "type": "boolean",
+          "description": "Story 通知是否隐藏发送者。"
+        },
+        "sound": {
+          "type": "string",
+          "description": "default、none 或 ringtone:<document-id>。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.notification.reactions_get",
+      "title": "读取反应通知设置",
+      "domain": "notification",
+      "domainLabel": "notification",
+      "summary": "notification：读取消息反应、Story 反应和投票通知来源、预览与声音。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.notification.reactions_set",
+      "title": "设置反应通知",
+      "domain": "notification",
+      "domainLabel": "notification",
+      "summary": "notification：在服务器当前完整对象上按字段修改消息反应、Story 反应、投票通知、预览或声音，避免覆盖未提供字段。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, messages, stories, poll_votes, show_previews, sound。 属于notification 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "messages": {
+          "type": "string",
+          "description": "消息反应通知来源。",
+          "enum": [
+            "off",
+            "contacts",
+            "all"
+          ]
+        },
+        "stories": {
+          "type": "string",
+          "description": "Story 反应通知来源。",
+          "enum": [
+            "off",
+            "contacts",
+            "all"
+          ]
+        },
+        "poll_votes": {
+          "type": "string",
+          "description": "投票通知来源。",
+          "enum": [
+            "off",
+            "contacts",
+            "all"
+          ]
+        },
+        "show_previews": {
+          "type": "boolean",
+          "description": "显示预览。"
+        },
+        "sound": {
+          "type": "string",
+          "description": "default、none 或 ringtone:<document-id>。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.payments.stars_status",
+      "title": "读取 Stars/TON 余额状态",
+      "domain": "payments",
+      "domainLabel": "payments",
+      "summary": "payments：从服务器读取当前账号的 Stars 或 TON 余额、首屏流水和订阅摘要；不创建订单或执行购买。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, ton。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "ton": {
+          "type": "boolean",
+          "description": "读取 TON 而非 Stars。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.payments.stars_subscriptions",
+      "title": "分页读取 Stars 订阅",
+      "domain": "payments",
+      "domainLabel": "payments",
+      "summary": "payments：从服务器分页读取当前账号的 Stars 订阅、续费价格、到期时间和余额不足状态。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, offset, missing_balance_only。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "offset": {
+          "type": "string",
+          "description": "上一页 subscriptions_next_offset；首页为空。"
+        },
+        "missing_balance_only": {
+          "type": "boolean",
+          "description": "仅返回余额不足的订阅。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.payments.stars_transactions",
+      "title": "分页读取 Stars/TON 流水",
+      "domain": "payments",
+      "domainLabel": "payments",
+      "summary": "payments：按方向、顺序和订阅筛选从服务器分页读取 Stars 或 TON 交易；收据 URL 和 bot payload 保持脱敏。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, direction, ascending, ton, subscription_id, offset, limit。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "direction": {
+          "type": "string",
+          "description": "交易方向。",
+          "enum": [
+            "all",
+            "incoming",
+            "outgoing"
+          ]
+        },
+        "ascending": {
+          "type": "boolean",
+          "description": "按时间升序。"
+        },
+        "ton": {
+          "type": "boolean",
+          "description": "读取 TON 而非 Stars。"
+        },
+        "subscription_id": {
+          "type": "string",
+          "description": "可选订阅 ID 过滤。"
+        },
+        "offset": {
+          "type": "string",
+          "description": "上一页 next_offset；首页为空。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
         }
       },
       "preferredAlternatives": [],
@@ -1203,12 +4679,364 @@
       "outputType": null
     },
     {
+      "name": "telegram.privacy.get",
+      "title": "读取账号隐私规则",
+      "domain": "privacy",
+      "domainLabel": "privacy",
+      "summary": "privacy：按隐私域从服务器读取基础策略、用户/群组例外及 Premium、联系人、Bot 规则。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：key。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "key": {
+          "type": "string",
+          "description": "隐私域。",
+          "enum": [
+            "last_seen",
+            "chat_invites",
+            "calls",
+            "phone_p2p",
+            "profile_photo",
+            "forwards",
+            "phone_number",
+            "added_by_phone",
+            "voice_messages",
+            "about",
+            "birthday",
+            "star_gifts_auto_save",
+            "no_paid_messages",
+            "saved_music"
+          ]
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.privacy.set",
+      "title": "完整替换账号隐私规则",
+      "domain": "privacy",
+      "domainLabel": "privacy",
+      "summary": "privacy：用 Agent 友好的基础策略和显式例外完整替换一个隐私域；必须传 replace=true。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：key, base, replace。 属于privacy 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "key",
+        "base",
+        "replace"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "key": {
+          "type": "string",
+          "description": "隐私域。",
+          "enum": [
+            "last_seen",
+            "chat_invites",
+            "calls",
+            "phone_p2p",
+            "profile_photo",
+            "forwards",
+            "phone_number",
+            "added_by_phone",
+            "voice_messages",
+            "about",
+            "birthday",
+            "star_gifts_auto_save",
+            "no_paid_messages",
+            "saved_music"
+          ]
+        },
+        "base": {
+          "type": "string",
+          "description": "基础可见性。",
+          "enum": [
+            "everybody",
+            "contacts",
+            "nobody"
+          ]
+        },
+        "allow_peers": {
+          "type": "array",
+          "description": "始终允许的用户或群组参与者。"
+        },
+        "disallow_peers": {
+          "type": "array",
+          "description": "始终拒绝的用户或群组参与者。"
+        },
+        "allow_close_friends": {
+          "type": "boolean",
+          "description": "允许 Close Friends。"
+        },
+        "allow_premium": {
+          "type": "boolean",
+          "description": "允许 Premium 用户。"
+        },
+        "disallow_contacts": {
+          "type": "boolean",
+          "description": "显式拒绝联系人。"
+        },
+        "bots": {
+          "type": "string",
+          "description": "Bot/Mini App 例外。",
+          "enum": [
+            "inherit",
+            "allow",
+            "disallow"
+          ]
+        },
+        "replace": {
+          "type": "boolean",
+          "description": "确认完整替换而非字段补丁。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.profile.birthday_set",
+      "title": "设置生日",
+      "domain": "profile",
+      "domainLabel": "个人资料",
+      "summary": "个人资料：设置或清除当前账号生日；清除时省略年月日并传 clear=true。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, year, month, day, clear。 属于姓名、简介等本人资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "year": {
+          "type": "integer",
+          "description": "年份。"
+        },
+        "month": {
+          "type": "integer",
+          "description": "月份。"
+        },
+        "day": {
+          "type": "integer",
+          "description": "日期。"
+        },
+        "clear": {
+          "type": "boolean",
+          "description": "是否清除生日。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.profile.emoji_status_set",
+      "title": "设置账号 emoji status",
+      "domain": "profile",
+      "domainLabel": "个人资料",
+      "summary": "个人资料：设置带可选到期时间的自定义 emoji status，或显式清除；64 位 document ID 使用字符串避免精度丢失。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, document_id, until, clear。 属于姓名、简介等本人资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "document_id": {
+          "type": "string",
+          "description": "自定义 emoji 文档 ID；非 clear 时必填。"
+        },
+        "until": {
+          "type": "string",
+          "description": "可选未来 ISO-8601 UTC 到期时间。"
+        },
+        "clear": {
+          "type": "boolean",
+          "description": "是否清除当前 emoji status。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.profile.get",
+      "title": "读取自己的完整资料",
+      "domain": "profile",
+      "domainLabel": "个人资料",
+      "summary": "个人资料：从服务器读取当前账号的姓名、简介、用户名、生日和公开资料状态。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.profile.photo_clear",
+      "title": "清除当前头像",
+      "domain": "profile",
+      "domainLabel": "个人资料",
+      "summary": "个人资料：清除当前账号头像但不删除头像历史。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account。 属于姓名、简介等本人资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.profile.photo_delete",
+      "title": "永久删除历史头像",
+      "domain": "profile",
+      "domainLabel": "个人资料",
+      "summary": "个人资料：永久删除一张明确 photo ID 的账号历史头像。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：photo_id。 属于姓名、简介等本人资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "photo_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "photo_id": {
+          "type": "string",
+          "description": "photo_list 返回的 64 位 photo ID。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.profile.photo_list",
+      "title": "列出历史头像",
+      "domain": "profile",
+      "domainLabel": "个人资料",
+      "summary": "个人资料：从服务器分页列出当前账号的头像历史，并以字符串返回 64 位 photo ID。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, offset, max_id, limit。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "offset": {
+          "type": "integer",
+          "description": "分页偏移。"
+        },
+        "max_id": {
+          "type": "string",
+          "description": "可选最大 photo ID。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.profile.photo_set",
+      "title": "切换到历史头像",
+      "domain": "profile",
+      "domainLabel": "个人资料",
+      "summary": "个人资料：把 photo_list 返回的一张历史头像设置为当前账号头像。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：photo_id。 属于姓名、简介等本人资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "photo_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "photo_id": {
+          "type": "string",
+          "description": "photo_list 返回的 64 位 photo ID。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.profile.photo_upload",
+      "title": "上传并设置账号头像",
+      "domain": "profile",
+      "domainLabel": "个人资料",
+      "summary": "个人资料：从 MCP 私有暂存区上传图片并将其设置为当前账号头像。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：file_ref, idempotency_key。 属于姓名、简介等本人资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "file_ref",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "file_ref": {
+          "type": "string",
+          "description": "由 Telegram MCP 私有暂存区返回的文件引用。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "头像上传意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
       "name": "telegram.profile.update",
       "title": "修改自己的姓名或简介",
       "domain": "profile",
       "domainLabel": "个人资料",
-      "summary": "个人资料：修改当前账号的 first_name、last_name 或 about。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, first_name, last_name, about。",
-      "tier": "preferred",
+      "summary": "个人资料：修改当前账号的 first_name、last_name 或 about。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, first_name, last_name, about。 属于姓名、简介等本人资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "external-or-network",
       "required": [],
       "arguments": {
@@ -1227,6 +5055,569 @@
         "about": {
           "type": "string",
           "description": "个人简介，可为空。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.profile.username_set",
+      "title": "设置公开用户名",
+      "domain": "profile",
+      "domainLabel": "个人资料",
+      "summary": "个人资料：设置或清除当前账号的公开 username，并执行服务器读回。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：username。 属于姓名、简介等本人资料维护的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "username"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "username": {
+          "type": "string",
+          "description": "新 username；空字符串用于清除。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.proxy.delete",
+      "title": "删除代理",
+      "domain": "proxy",
+      "domainLabel": "proxy",
+      "summary": "proxy：从本机列表删除指定代理；删除当前代理会同时安全禁用代理连接。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：proxy_id。 属于proxy 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "proxy_id"
+      ],
+      "arguments": {
+        "proxy_id": {
+          "type": "string",
+          "description": "proxy.list 返回的稳定引用。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.proxy.list",
+      "title": "列出本机代理配置",
+      "domain": "proxy",
+      "domainLabel": "proxy",
+      "summary": "proxy：列出 Telegram 本机代理、选中/启用状态和连通性摘要；密码与 MTProto secret 永不回传。 返回结构化成功或可操作错误，不返回认证秘密。 无业务参数。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {},
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.proxy.select",
+      "title": "选择并启停代理",
+      "domain": "proxy",
+      "domainLabel": "proxy",
+      "summary": "proxy：选择已有代理并精确设置消息连接与通话代理开关；MTProto 代理不允许用于通话。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：proxy_id, enabled。 属于proxy 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "write",
+      "required": [
+        "proxy_id",
+        "enabled"
+      ],
+      "arguments": {
+        "proxy_id": {
+          "type": "string",
+          "description": "proxy.list 返回的稳定引用。"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "是否启用所选代理。"
+        },
+        "for_calls": {
+          "type": "boolean",
+          "description": "是否也将 SOCKS5 用于通话。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.proxy.upsert",
+      "title": "添加或修改代理",
+      "domain": "proxy",
+      "domainLabel": "proxy",
+      "summary": "proxy：添加 SOCKS5/MTProto 代理，或按稳定 proxy_id 修改现有代理；不会自动启用新代理且不回传凭据。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：type, address, port。",
+      "tier": "standard",
+      "risk": "write",
+      "required": [
+        "type",
+        "address",
+        "port"
+      ],
+      "arguments": {
+        "proxy_id": {
+          "type": "string",
+          "description": "修改时传 proxy.list 返回的稳定引用；省略则添加。"
+        },
+        "type": {
+          "type": "string",
+          "description": "代理类型。",
+          "enum": [
+            "socks5",
+            "mtproto"
+          ]
+        },
+        "address": {
+          "type": "string",
+          "description": "代理主机名或 IP。"
+        },
+        "port": {
+          "type": "integer",
+          "description": "代理端口。"
+        },
+        "username": {
+          "type": "string",
+          "description": "SOCKS5 用户名；可为空。"
+        },
+        "password": {
+          "type": "string",
+          "description": "SOCKS5 密码；仅写入，不回传。"
+        },
+        "secret": {
+          "type": "string",
+          "description": "MTProto secret；仅写入，不回传。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.qr.decode_file",
+      "title": "解码暂存图片中的二维码",
+      "domain": "qr",
+      "domainLabel": "qr",
+      "summary": "qr：使用 APP 内置 ZXing 离线解码私有 MCP 暂存区中的图片，不请求摄像头权限。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：file_ref。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "file_ref"
+      ],
+      "arguments": {
+        "file_ref": {
+          "type": "string",
+          "description": "由 Telegram MCP 私有暂存区返回的文件引用。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.qr.encode",
+      "title": "生成二维码到暂存区",
+      "domain": "qr",
+      "domainLabel": "qr",
+      "summary": "qr：使用 APP 内置 ZXing 将文本离线编码为 PNG，并写入受限私有 MCP 暂存区。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：text。",
+      "tier": "standard",
+      "risk": "write",
+      "required": [
+        "text"
+      ],
+      "arguments": {
+        "text": {
+          "type": "string",
+          "description": "需要编码的文本。"
+        },
+        "size": {
+          "type": "integer",
+          "description": "正方形 PNG 边长像素。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.quick_reply.create_text",
+      "title": "创建文本快捷回复",
+      "domain": "quick_reply",
+      "domainLabel": "quick_reply",
+      "summary": "quick_reply：通过 Telegram 自身发送状态机创建快捷回复及其首条格式化文本消息；hello/away 可供 Business 自动消息使用。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：shortcut, text, idempotency_key。 属于quick_reply 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "shortcut",
+        "text",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "shortcut": {
+          "type": "string",
+          "description": "1..32 个 Telegram 支持字符的快捷回复名称。"
+        },
+        "text": {
+          "type": "string",
+          "description": "首条消息文本。"
+        },
+        "parse_mode": {
+          "type": "string",
+          "description": "plain 或 telegram_markdown。",
+          "enum": [
+            "plain",
+            "telegram_markdown"
+          ]
+        },
+        "link_preview": {
+          "type": "boolean",
+          "description": "是否允许链接预览。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "创建意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.quick_reply.delete",
+      "title": "删除快捷回复",
+      "domain": "quick_reply",
+      "domainLabel": "quick_reply",
+      "summary": "quick_reply：永久删除一个普通快捷回复及其全部模板消息；Business hello/away 必须由对应设置管理。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：shortcut_id。 属于quick_reply 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "shortcut_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "shortcut_id": {
+          "type": "integer",
+          "description": "目标 shortcut ID。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.quick_reply.get",
+      "title": "读取快捷回复内容",
+      "domain": "quick_reply",
+      "domainLabel": "quick_reply",
+      "summary": "quick_reply：按稳定 shortcut ID 或精确名称读取快捷回复及其独立消息空间中的全部消息；省略选择器时返回紧凑快捷回复列表以便发现。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, shortcut_id, shortcut。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "shortcut_id": {
+          "type": "integer",
+          "description": "list 返回的 shortcut ID。"
+        },
+        "shortcut": {
+          "type": "string",
+          "description": "精确快捷回复名称；与 shortcut_id 二选一。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.quick_reply.list",
+      "title": "列出快捷回复",
+      "domain": "quick_reply",
+      "domainLabel": "quick_reply",
+      "summary": "quick_reply：从服务器列出快捷回复的稳定 ID、名称、顺序、首条消息和消息数量。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.quick_reply.message_add_text",
+      "title": "追加快捷回复文本",
+      "domain": "quick_reply",
+      "domainLabel": "quick_reply",
+      "summary": "quick_reply：通过 Telegram 自身发送状态机向既有快捷回复追加一条格式化文本消息。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：shortcut_id, text, idempotency_key。 属于quick_reply 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "shortcut_id",
+        "text",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "shortcut_id": {
+          "type": "integer",
+          "description": "list 返回的 shortcut ID。"
+        },
+        "text": {
+          "type": "string",
+          "description": "新增消息文本。"
+        },
+        "parse_mode": {
+          "type": "string",
+          "description": "plain 或 telegram_markdown。",
+          "enum": [
+            "plain",
+            "telegram_markdown"
+          ]
+        },
+        "link_preview": {
+          "type": "boolean",
+          "description": "是否允许链接预览。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "追加意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.quick_reply.message_delete",
+      "title": "删除快捷回复消息",
+      "domain": "quick_reply",
+      "domainLabel": "quick_reply",
+      "summary": "quick_reply：从指定快捷回复中永久删除一至多条明确 ID 的模板消息。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：shortcut_id, message_ids。 属于quick_reply 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "shortcut_id",
+        "message_ids"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "shortcut_id": {
+          "type": "integer",
+          "description": "目标 shortcut ID。"
+        },
+        "message_ids": {
+          "type": "array",
+          "description": "要删除的模板消息 ID。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.quick_reply.message_edit_text",
+      "title": "编辑快捷回复文本",
+      "domain": "quick_reply",
+      "domainLabel": "quick_reply",
+      "summary": "quick_reply：在独立快捷回复消息空间内编辑一条明确 ID 的格式化文本消息。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：shortcut_id, message_id, text。 属于quick_reply 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "shortcut_id",
+        "message_id",
+        "text"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "shortcut_id": {
+          "type": "integer",
+          "description": "目标 shortcut ID。"
+        },
+        "message_id": {
+          "type": "integer",
+          "description": "目标会话中的 Telegram 消息 ID。"
+        },
+        "text": {
+          "type": "string",
+          "description": "替换后的消息文本。"
+        },
+        "parse_mode": {
+          "type": "string",
+          "description": "plain 或 telegram_markdown。",
+          "enum": [
+            "plain",
+            "telegram_markdown"
+          ]
+        },
+        "link_preview": {
+          "type": "boolean",
+          "description": "是否允许链接预览。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.quick_reply.rename",
+      "title": "重命名快捷回复",
+      "domain": "quick_reply",
+      "domainLabel": "quick_reply",
+      "summary": "quick_reply：按稳定 shortcut ID 修改普通快捷回复名称；保留 hello/away Business 名称。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：shortcut_id, shortcut。 属于quick_reply 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "shortcut_id",
+        "shortcut"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "shortcut_id": {
+          "type": "integer",
+          "description": "目标 shortcut ID。"
+        },
+        "shortcut": {
+          "type": "string",
+          "description": "新名称。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.quick_reply.reorder",
+      "title": "重排快捷回复",
+      "domain": "quick_reply",
+      "domainLabel": "quick_reply",
+      "summary": "quick_reply：以完整、无重复的 shortcut ID 列表替换服务器快捷回复顺序。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：shortcut_ids, replace。 属于quick_reply 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "shortcut_ids",
+        "replace"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "shortcut_ids": {
+          "type": "array",
+          "description": "包含所有当前 shortcut ID 的新顺序。"
+        },
+        "replace": {
+          "type": "boolean",
+          "description": "确认完整替换顺序。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.quick_reply.send",
+      "title": "发送快捷回复",
+      "domain": "quick_reply",
+      "domainLabel": "quick_reply",
+      "summary": "quick_reply：把快捷回复的全部或指定模板消息发送到明确 peer，并返回每条新消息的稳定 ID。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, shortcut_id, idempotency_key。 属于quick_reply 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "shortcut_id",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "shortcut_id": {
+          "type": "integer",
+          "description": "目标 shortcut ID。"
+        },
+        "message_ids": {
+          "type": "array",
+          "description": "可选模板消息子集；省略时发送全部。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "发送意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.security.two_step_status",
+      "title": "读取两步验证安全状态",
+      "domain": "security",
+      "domainLabel": "security",
+      "summary": "security：从服务器读取两步验证、恢复邮箱、安全值和待重置状态；SRP 参数、提示和邮箱掩码保持脱敏。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
         }
       },
       "preferredAlternatives": [],
@@ -1257,8 +5648,8 @@
       "title": "终止登录会话",
       "domain": "session",
       "domainLabel": "登录会话",
-      "summary": "登录会话：终止指定的非当前设备登录会话。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：session_id。",
-      "tier": "preferred",
+      "summary": "登录会话：终止指定的非当前设备登录会话。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：session_id。 属于列出与终止其他已授权设备会话的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
       "risk": "destructive/confirmation-required",
       "required": [
         "session_id"
@@ -1283,11 +5674,11 @@
       "outputType": null
     },
     {
-      "name": "telegram.settings.get",
-      "title": "读取 Agent 友好的本地设置",
+      "name": "telegram.settings.auto_download_get",
+      "title": "读取自动下载策略",
       "domain": "settings",
       "domainLabel": "设置",
-      "summary": "设置：读取白名单内的显示、播放、流媒体与列表设置。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, keys。",
+      "summary": "设置：读取移动网络、Wi-Fi 和漫游的当前预设、媒体上限、聊天类型掩码及预加载行为。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account。",
       "tier": "preferred",
       "risk": "read-only",
       "required": [],
@@ -1295,7 +5686,63 @@
         "account": {
           "type": "integer",
           "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.settings.auto_download_set",
+      "title": "设置自动下载预设",
+      "domain": "settings",
+      "domainLabel": "设置",
+      "summary": "设置：将单个网络精确设为关闭、低、中或高预设，持久化本机选择并沿用 Telegram GUI 的云端预设同步路径。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：network, preset。 属于Agent 允许范围内的本地设置的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "network",
+        "preset"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
         },
+        "network": {
+          "type": "string",
+          "description": "网络类型。",
+          "enum": [
+            "mobile",
+            "wifi",
+            "roaming"
+          ]
+        },
+        "preset": {
+          "type": "string",
+          "description": "目标内置预设。",
+          "enum": [
+            "off",
+            "low",
+            "medium",
+            "high"
+          ]
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.settings.get",
+      "title": "读取 Agent 友好的本地设置",
+      "domain": "settings",
+      "domainLabel": "设置",
+      "summary": "设置：读取白名单内的显示、播放、流媒体与列表设置。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：keys。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
         "keys": {
           "type": "array",
           "description": "可选设置键；省略返回全部白名单键。"
@@ -1311,19 +5758,951 @@
       "domain": "settings",
       "domainLabel": "设置",
       "summary": "设置：幂等修改白名单内的本地设置，不允许任意 SharedPreferences 键。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：values。",
-      "tier": "preferred",
+      "tier": "standard",
       "risk": "write",
       "required": [
         "values"
+      ],
+      "arguments": {
+        "values": {
+          "type": "object",
+          "description": "键值映射；仅接受下列白名单布尔键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.sticker.favorite_list",
+      "title": "列出收藏贴纸",
+      "domain": "sticker",
+      "domainLabel": "sticker",
+      "summary": "sticker：从服务器读取账号的收藏贴纸文档，64 位 ID 使用字符串。 返回结构化成功或可操作错误，不返回认证秘密。 可选参数：account, offset, limit。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "offset": {
+          "type": "integer",
+          "description": "零基列表 offset。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.sticker.favorite_set",
+      "title": "收藏或取消收藏贴纸",
+      "domain": "sticker",
+      "domainLabel": "sticker",
+      "summary": "sticker：从精确服务器消息取得贴纸文档，设置其收藏状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：source_peer, source_message_id, saved。",
+      "tier": "standard",
+      "risk": "write",
+      "required": [
+        "source_peer",
+        "source_message_id",
+        "saved"
       ],
       "arguments": {
         "account": {
           "type": "integer",
           "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
         },
-        "values": {
-          "type": "object",
-          "description": "键值映射；仅接受下列白名单布尔键。"
+        "source_peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "source_message_id": {
+          "type": "integer",
+          "description": "目标会话中的 Telegram 消息 ID。"
+        },
+        "saved": {
+          "type": "boolean",
+          "description": "true 收藏，false 取消收藏。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.sticker.pack_search",
+      "title": "搜索贴纸或自定义 emoji 包",
+      "domain": "sticker",
+      "domainLabel": "sticker",
+      "summary": "sticker：按关键词搜索服务器贴纸包或自定义 emoji 包，返回稳定 short_name、安装和归档状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：query。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "query"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "query": {
+          "type": "string",
+          "description": "搜索关键词。"
+        },
+        "emoji_packs": {
+          "type": "boolean",
+          "description": "搜索自定义 emoji 包而非普通贴纸包。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.sticker.pack_set",
+      "title": "安装或卸载贴纸包",
+      "domain": "sticker",
+      "domainLabel": "sticker",
+      "summary": "sticker：按公开 short_name 安装或卸载贴纸/emoji 包；卸载要求显式确认并以服务器 getStickerSet 回读。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：short_name, installed。 属于sticker 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "short_name",
+        "installed"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "short_name": {
+          "type": "string",
+          "description": "公开贴纸包 short_name。"
+        },
+        "installed": {
+          "type": "boolean",
+          "description": "目标安装状态。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.sticker.search",
+      "title": "按 emoji 搜索贴纸",
+      "domain": "sticker",
+      "domainLabel": "sticker",
+      "summary": "sticker：从服务器按 emoji 搜索贴纸并返回仅在当前 APP/MCP 生命周期有效的签名 document_ref。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：emoji。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "emoji"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "emoji": {
+          "type": "string",
+          "description": "用于搜索的 emoji。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.sticker.send",
+      "title": "发送搜索到的贴纸",
+      "domain": "sticker",
+      "domainLabel": "sticker",
+      "summary": "sticker：使用 sticker.search 返回的短期签名引用经 SendMessagesHelper 发送贴纸，支持回复、静默和定时。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, document_ref, idempotency_key。 属于sticker 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "document_ref",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "document_ref": {
+          "type": "string",
+          "description": "sticker.search 返回的短期签名引用。"
+        },
+        "reply_to_message_id": {
+          "type": "integer",
+          "description": "目标会话中的 Telegram 消息 ID。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛超级群组中的目标主题 ID；省略时发送到普通会话或 General 主题。"
+        },
+        "silent": {
+          "type": "boolean",
+          "description": "静默发送。"
+        },
+        "schedule_at": {
+          "type": "string",
+          "description": "可选 ISO-8601 UTC 未来时间。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "发送意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.sticker.send_saved",
+      "title": "发送收藏贴纸",
+      "domain": "sticker",
+      "domainLabel": "sticker",
+      "summary": "sticker：按收藏列表中的 document_id 通过 Telegram 发送助手发送贴纸。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, document_id, idempotency_key。 属于sticker 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "document_id",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "document_id": {
+          "type": "string",
+          "description": "favorite_list 返回的 64 位 document ID。"
+        },
+        "reply_to_message_id": {
+          "type": "integer",
+          "description": "可选回复消息 ID。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛超级群组中的目标主题 ID；省略时发送到普通会话或 General 主题。"
+        },
+        "silent": {
+          "type": "boolean",
+          "description": "是否静默发送。"
+        },
+        "schedule_at": {
+          "type": "string",
+          "description": "可选 ISO-8601 定时时间。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "发送意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.storage.cache_clear",
+      "title": "清理选定 Telegram 缓存",
+      "domain": "storage",
+      "domainLabel": "storage",
+      "summary": "storage：停止当前下载后清理明确选择的缓存分类；mcp_staging 会同时清除文件目录与分片上传会话，保留草稿目录，刷新 FileLoader/媒体索引，并返回前后独立扫描。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：categories。 属于storage 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "categories"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "categories": {
+          "type": "array",
+          "description": "要清理的明确分类。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.storage.stats",
+      "title": "读取 Telegram 缓存统计",
+      "domain": "storage",
+      "domainLabel": "storage",
+      "summary": "storage：按照片、视频、文档、音乐、语音、Stories、贴纸、临时文件、日志和 MCP 暂存区扫描本机缓存大小；不暴露文件路径。 返回结构化成功或可操作错误，不返回认证秘密。 无业务参数。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [],
+      "arguments": {},
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.story.archive_list",
+      "title": "列出归档 Story",
+      "domain": "story",
+      "domainLabel": "story",
+      "summary": "story：分页列出自己或可管理 peer 的归档 Story。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "offset_id": {
+          "type": "integer",
+          "description": "分页 Story ID。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.story.can_send",
+      "title": "查询 Story 发布资格",
+      "domain": "story",
+      "domainLabel": "story",
+      "summary": "story：从服务器查询当前账号能否为自己、Bot 或所管理频道继续发布 Story。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.story.delete",
+      "title": "删除 Story",
+      "domain": "story",
+      "domainLabel": "story",
+      "summary": "story：删除自己或有删除权限的精确 Story，并以服务器缺席回读验证。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, story_id。 属于story 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "peer",
+        "story_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "story_id": {
+          "type": "integer",
+          "description": "Story ID。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.story.edit",
+      "title": "编辑 Story",
+      "domain": "story",
+      "domainLabel": "story",
+      "summary": "story：替换自己或可管理 Story 的媒体、caption 或可见性，并按精确 story_id 回读。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, story_id。 属于story 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "story_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "story_id": {
+          "type": "integer",
+          "description": "Story ID。"
+        },
+        "file_ref": {
+          "type": "string",
+          "description": "由 Telegram MCP 私有暂存区返回的文件引用。"
+        },
+        "media_type": {
+          "type": "string",
+          "description": "替换媒体的类型。",
+          "enum": [
+            "auto",
+            "photo",
+            "video"
+          ]
+        },
+        "width": {
+          "type": "integer",
+          "description": "替换视频像素宽度。"
+        },
+        "height": {
+          "type": "integer",
+          "description": "替换视频像素高度。"
+        },
+        "duration": {
+          "type": "number",
+          "description": "替换视频时长秒数。"
+        },
+        "no_sound_video": {
+          "type": "boolean",
+          "description": "替换视频是否无声。"
+        },
+        "caption": {
+          "type": "string",
+          "description": "新 caption；空字符串清除。"
+        },
+        "parse_mode": {
+          "type": "string",
+          "description": "plain 或 telegram_markdown。",
+          "enum": [
+            "plain",
+            "telegram_markdown"
+          ]
+        },
+        "privacy": {
+          "type": "string",
+          "description": "新可见性。",
+          "enum": [
+            "everyone",
+            "contacts",
+            "close_friends",
+            "selected"
+          ]
+        },
+        "privacy_peers": {
+          "type": "array",
+          "description": "selected 模式允许的用户。"
+        },
+        "except_peers": {
+          "type": "array",
+          "description": "everyone/contacts 模式排除的用户。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.story.get",
+      "title": "读取精确 Story",
+      "domain": "story",
+      "domainLabel": "story",
+      "summary": "story：从指定 peer 精确读取一条 Story 的 caption、媒体、可见性和计数。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, story_id。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer",
+        "story_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "story_id": {
+          "type": "integer",
+          "description": "Story ID。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.story.hide_peer",
+      "title": "隐藏 peer 的 Story",
+      "domain": "story",
+      "domainLabel": "story",
+      "summary": "story：把指定 peer 的 Story 移入隐藏列表，不屏蔽 peer。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
+      "tier": "standard",
+      "risk": "write",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.story.list",
+      "title": "列出 Story",
+      "domain": "story",
+      "domainLabel": "story",
+      "summary": "story：按 peer 从服务器读取活跃、置顶或归档 Story，返回稳定 story_id 与分页状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "mode": {
+          "type": "string",
+          "description": "列表模式。",
+          "enum": [
+            "active",
+            "pinned",
+            "archive"
+          ]
+        },
+        "offset_id": {
+          "type": "integer",
+          "description": "上一页末条 story ID；首页为 0。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.story.mark_read",
+      "title": "标记 Story 已读",
+      "domain": "story",
+      "domainLabel": "story",
+      "summary": "story：把指定 peer 的 Story 已读进度推进到精确 story_id。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, story_id。",
+      "tier": "standard",
+      "risk": "write",
+      "required": [
+        "peer",
+        "story_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "story_id": {
+          "type": "integer",
+          "description": "最大已读 Story ID。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.story.pin",
+      "title": "置顶或取消归档 Story",
+      "domain": "story",
+      "domainLabel": "story",
+      "summary": "story：把自己或可管理的 Story 放到资料页置顶列表。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, story_id。 属于story 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "story_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "story_id": {
+          "type": "integer",
+          "description": "Story ID。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.story.pinned_list",
+      "title": "列出置顶 Story",
+      "domain": "story",
+      "domainLabel": "story",
+      "summary": "story：分页列出 peer 资料页上的置顶 Story 及置顶顺序。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "offset_id": {
+          "type": "integer",
+          "description": "分页 Story ID。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.story.publish",
+      "title": "发布图片或视频 Story",
+      "domain": "story",
+      "domainLabel": "story",
+      "summary": "story：从 MCP 私有暂存区发布图片或视频 Story，支持 caption 格式、可见性、时长、置顶和禁止转发。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, file_ref, idempotency_key。 属于story 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "file_ref",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "file_ref": {
+          "type": "string",
+          "description": "由 Telegram MCP 私有暂存区返回的文件引用。"
+        },
+        "media_type": {
+          "type": "string",
+          "description": "按 MIME 自动判断，或显式指定图片/视频。",
+          "enum": [
+            "auto",
+            "photo",
+            "video"
+          ]
+        },
+        "width": {
+          "type": "integer",
+          "description": "视频像素宽度。"
+        },
+        "height": {
+          "type": "integer",
+          "description": "视频像素高度。"
+        },
+        "duration": {
+          "type": "number",
+          "description": "视频时长秒数。"
+        },
+        "no_sound_video": {
+          "type": "boolean",
+          "description": "视频是否无声。"
+        },
+        "caption": {
+          "type": "string",
+          "description": "Story caption。"
+        },
+        "parse_mode": {
+          "type": "string",
+          "description": "plain 或 telegram_markdown。",
+          "enum": [
+            "plain",
+            "telegram_markdown"
+          ]
+        },
+        "privacy": {
+          "type": "string",
+          "description": "Story 可见性。",
+          "enum": [
+            "everyone",
+            "contacts",
+            "close_friends",
+            "selected"
+          ]
+        },
+        "privacy_peers": {
+          "type": "array",
+          "description": "selected 模式允许的用户。"
+        },
+        "except_peers": {
+          "type": "array",
+          "description": "everyone/contacts 模式排除的用户。"
+        },
+        "period": {
+          "type": "integer",
+          "description": "展示时长秒数。",
+          "enum": [
+            21600,
+            43200,
+            86400,
+            172800
+          ]
+        },
+        "pinned": {
+          "type": "boolean",
+          "description": "是否同时置顶到资料。"
+        },
+        "no_forwards": {
+          "type": "boolean",
+          "description": "是否禁止转发。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "发布意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.story.reaction_set",
+      "title": "设置 Story 反应",
+      "domain": "story",
+      "domainLabel": "story",
+      "summary": "story：对精确 Story 设置普通 emoji、自定义 emoji 反应，或显式清除。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, story_id。 属于story 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "story_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "story_id": {
+          "type": "integer",
+          "description": "Story ID。"
+        },
+        "reaction": {
+          "type": "string",
+          "description": "普通 emoji；空且无自定义 ID 时清除。"
+        },
+        "custom_emoji_document_id": {
+          "type": "string",
+          "description": "自定义 emoji 64 位 document ID。"
+        },
+        "add_to_recent": {
+          "type": "boolean",
+          "description": "是否加入最近反应。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.story.unhide_peer",
+      "title": "取消隐藏 peer 的 Story",
+      "domain": "story",
+      "domainLabel": "story",
+      "summary": "story：把指定 peer 的 Story 恢复到主列表。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
+      "tier": "standard",
+      "risk": "write",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.story.unpin",
+      "title": "归档 Story",
+      "domain": "story",
+      "domainLabel": "story",
+      "summary": "story：把自己或可管理的置顶 Story 移入归档。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, story_id。 属于story 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "story_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "story_id": {
+          "type": "integer",
+          "description": "Story ID。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.story.views_list",
+      "title": "列出 Story 浏览者",
+      "domain": "story",
+      "domainLabel": "story",
+      "summary": "story：对自己或有管理权的 Story 分页读取浏览者、反应、转发和公开转贴。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, story_id。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer",
+        "story_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "story_id": {
+          "type": "integer",
+          "description": "Story ID。"
+        },
+        "offset": {
+          "type": "string",
+          "description": "服务器分页 offset。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        },
+        "query": {
+          "type": "string",
+          "description": "可选浏览者搜索文本。"
+        },
+        "contacts_only": {
+          "type": "boolean",
+          "description": "只返回联系人。"
+        },
+        "reactions_first": {
+          "type": "boolean",
+          "description": "优先反应者。"
+        },
+        "forwards_first": {
+          "type": "boolean",
+          "description": "优先转发。"
         }
       },
       "preferredAlternatives": [],
@@ -1343,10 +6722,269 @@
       "preferredAlternatives": [],
       "inputType": null,
       "outputType": null
+    },
+    {
+      "name": "telegram.topic.create",
+      "title": "创建论坛主题",
+      "domain": "topic",
+      "domainLabel": "topic",
+      "summary": "topic：在有权限的论坛超级群组中创建主题。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, title, idempotency_key。 属于topic 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "title",
+        "idempotency_key"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "title": {
+          "type": "string",
+          "description": "主题标题。"
+        },
+        "icon_color": {
+          "type": "integer",
+          "description": "可选 RGB 图标色。"
+        },
+        "icon_emoji_id": {
+          "type": "integer",
+          "description": "可选自定义 emoji document ID。"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "创建意图去重键。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.topic.delete",
+      "title": "删除论坛主题",
+      "domain": "topic",
+      "domainLabel": "topic",
+      "summary": "topic：删除主题及其消息历史；General 主题不可删除。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, topic_id。 属于topic 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "destructive/confirmation-required",
+      "required": [
+        "peer",
+        "topic_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛主题 ID；必须大于 1。"
+        },
+        "_confirm": {
+          "type": "boolean",
+          "description": "确认执行高影响操作；必须显式为 true。",
+          "const": true
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.topic.get",
+      "title": "读取论坛主题",
+      "domain": "topic",
+      "domainLabel": "topic",
+      "summary": "topic：按 peer 与 topic_id 从服务器读取精确主题状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, topic_id。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer",
+        "topic_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛主题 ID。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.topic.list",
+      "title": "列出论坛主题",
+      "domain": "topic",
+      "domainLabel": "topic",
+      "summary": "topic：分页列出论坛超级群组的主题、未读和置顶状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer。",
+      "tier": "preferred",
+      "risk": "read-only",
+      "required": [
+        "peer"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "query": {
+          "type": "string",
+          "description": "可选主题搜索词。"
+        },
+        "offset_date": {
+          "type": "integer",
+          "description": "分页日期偏移。"
+        },
+        "offset_id": {
+          "type": "integer",
+          "description": "分页消息偏移。"
+        },
+        "offset_topic": {
+          "type": "integer",
+          "description": "分页主题偏移。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量上限。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.topic.pin",
+      "title": "置顶论坛主题",
+      "domain": "topic",
+      "domainLabel": "topic",
+      "summary": "topic：在论坛主题列表中置顶指定主题。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, topic_id。 属于topic 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "topic_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛主题 ID。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.topic.unpin",
+      "title": "取消置顶论坛主题",
+      "domain": "topic",
+      "domainLabel": "topic",
+      "summary": "topic：取消指定论坛主题的置顶状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, topic_id。 属于topic 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "topic_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛主题 ID。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
+    },
+    {
+      "name": "telegram.topic.update",
+      "title": "编辑论坛主题",
+      "domain": "topic",
+      "domainLabel": "topic",
+      "summary": "topic：原子修改主题标题、图标、关闭或隐藏状态。 返回结构化成功或可操作错误，不返回认证秘密。 必填参数：peer, topic_id。 属于topic 功能的底层接口，仅在语义接口不能满足时使用。",
+      "tier": "advanced",
+      "risk": "external-or-network",
+      "required": [
+        "peer",
+        "topic_id"
+      ],
+      "arguments": {
+        "account": {
+          "type": "integer",
+          "description": "账号槽位，0 到 3；省略时使用 Telegram 当前选中账号。"
+        },
+        "peer": {
+          "type": "string",
+          "description": "稳定目标引用：saved、@username、user:<id>、chat:<id>、channel:<id> 或 dialog:<signed-id>。"
+        },
+        "topic_id": {
+          "type": "integer",
+          "description": "论坛主题 ID。"
+        },
+        "title": {
+          "type": "string",
+          "description": "可选新标题。"
+        },
+        "icon_emoji_id": {
+          "type": "integer",
+          "description": "可选 emoji ID；0 清除。"
+        },
+        "closed": {
+          "type": "boolean",
+          "description": "可选关闭或重开。"
+        },
+        "hidden": {
+          "type": "boolean",
+          "description": "可选隐藏或显示。"
+        }
+      },
+      "preferredAlternatives": [],
+      "inputType": null,
+      "outputType": null
     }
   ],
   "summary": {
-    "total": 46,
+    "total": 201,
     "domains": {
       "account": {
         "label": "账号",
@@ -1356,45 +6994,117 @@
         "readOnly": 2,
         "confirmationRequired": 0
       },
+      "bot": {
+        "label": "bot",
+        "purpose": "bot",
+        "tools": 6,
+        "preferred": 3,
+        "readOnly": 3,
+        "confirmationRequired": 1
+      },
+      "business": {
+        "label": "business",
+        "purpose": "business",
+        "tools": 13,
+        "preferred": 3,
+        "readOnly": 3,
+        "confirmationRequired": 2
+      },
+      "call": {
+        "label": "call",
+        "purpose": "call",
+        "tools": 4,
+        "preferred": 2,
+        "readOnly": 2,
+        "confirmationRequired": 1
+      },
       "chat": {
         "label": "群组与频道",
         "purpose": "创建、加入、退出及资料维护",
-        "tools": 8,
-        "preferred": 8,
-        "readOnly": 2,
-        "confirmationRequired": 2
+        "tools": 35,
+        "preferred": 9,
+        "readOnly": 9,
+        "confirmationRequired": 11
       },
       "contact": {
         "label": "联系人",
         "purpose": "联系人检索、屏蔽与解除屏蔽",
-        "tools": 5,
-        "preferred": 5,
-        "readOnly": 3,
-        "confirmationRequired": 1
+        "tools": 8,
+        "preferred": 4,
+        "readOnly": 4,
+        "confirmationRequired": 2
       },
       "dialog": {
         "label": "会话",
         "purpose": "会话列表、归档、静音和置顶",
-        "tools": 8,
-        "preferred": 8,
-        "readOnly": 1,
+        "tools": 9,
+        "preferred": 2,
+        "readOnly": 2,
         "confirmationRequired": 1
       },
       "draft": {
         "label": "草稿",
         "purpose": "设置或清除指定会话草稿",
         "tools": 3,
-        "preferred": 3,
+        "preferred": 1,
+        "readOnly": 1,
+        "confirmationRequired": 0
+      },
+      "file": {
+        "label": "file",
+        "purpose": "file",
+        "tools": 12,
+        "preferred": 5,
+        "readOnly": 5,
+        "confirmationRequired": 2
+      },
+      "folder": {
+        "label": "folder",
+        "purpose": "folder",
+        "tools": 5,
+        "preferred": 2,
+        "readOnly": 2,
+        "confirmationRequired": 1
+      },
+      "gif": {
+        "label": "gif",
+        "purpose": "gif",
+        "tools": 3,
+        "preferred": 1,
         "readOnly": 1,
         "confirmationRequired": 0
       },
       "message": {
         "label": "消息",
         "purpose": "历史、搜索、发送、编辑、转发、删除和已读状态",
-        "tools": 13,
-        "preferred": 13,
-        "readOnly": 4,
+        "tools": 22,
+        "preferred": 5,
+        "readOnly": 5,
+        "confirmationRequired": 2
+      },
+      "network": {
+        "label": "network",
+        "purpose": "network",
+        "tools": 2,
+        "preferred": 1,
+        "readOnly": 1,
         "confirmationRequired": 1
+      },
+      "notification": {
+        "label": "notification",
+        "purpose": "notification",
+        "tools": 6,
+        "preferred": 3,
+        "readOnly": 3,
+        "confirmationRequired": 0
+      },
+      "payments": {
+        "label": "payments",
+        "purpose": "payments",
+        "tools": 3,
+        "preferred": 3,
+        "readOnly": 3,
+        "confirmationRequired": 0
       },
       "peer": {
         "label": "目标解析",
@@ -1404,29 +7114,93 @@
         "readOnly": 1,
         "confirmationRequired": 0
       },
+      "privacy": {
+        "label": "privacy",
+        "purpose": "privacy",
+        "tools": 2,
+        "preferred": 1,
+        "readOnly": 1,
+        "confirmationRequired": 0
+      },
       "profile": {
         "label": "个人资料",
         "purpose": "姓名、简介等本人资料维护",
+        "tools": 10,
+        "preferred": 2,
+        "readOnly": 2,
+        "confirmationRequired": 2
+      },
+      "proxy": {
+        "label": "proxy",
+        "purpose": "proxy",
+        "tools": 4,
+        "preferred": 1,
+        "readOnly": 1,
+        "confirmationRequired": 1
+      },
+      "qr": {
+        "label": "qr",
+        "purpose": "qr",
+        "tools": 2,
+        "preferred": 1,
+        "readOnly": 1,
+        "confirmationRequired": 0
+      },
+      "quick_reply": {
+        "label": "quick_reply",
+        "purpose": "quick_reply",
+        "tools": 10,
+        "preferred": 2,
+        "readOnly": 2,
+        "confirmationRequired": 2
+      },
+      "security": {
+        "label": "security",
+        "purpose": "security",
         "tools": 1,
         "preferred": 1,
-        "readOnly": 0,
+        "readOnly": 1,
         "confirmationRequired": 0
       },
       "session": {
         "label": "登录会话",
         "purpose": "列出与终止其他已授权设备会话",
         "tools": 2,
-        "preferred": 2,
+        "preferred": 1,
         "readOnly": 1,
         "confirmationRequired": 1
       },
       "settings": {
         "label": "设置",
         "purpose": "Agent 允许范围内的本地设置",
-        "tools": 2,
+        "tools": 4,
         "preferred": 2,
-        "readOnly": 1,
+        "readOnly": 2,
         "confirmationRequired": 0
+      },
+      "sticker": {
+        "label": "sticker",
+        "purpose": "sticker",
+        "tools": 7,
+        "preferred": 3,
+        "readOnly": 3,
+        "confirmationRequired": 1
+      },
+      "storage": {
+        "label": "storage",
+        "purpose": "storage",
+        "tools": 2,
+        "preferred": 1,
+        "readOnly": 1,
+        "confirmationRequired": 1
+      },
+      "story": {
+        "label": "story",
+        "purpose": "story",
+        "tools": 15,
+        "preferred": 6,
+        "readOnly": 6,
+        "confirmationRequired": 1
       },
       "system": {
         "label": "运行状态",
@@ -1435,6 +7209,14 @@
         "preferred": 1,
         "readOnly": 1,
         "confirmationRequired": 0
+      },
+      "topic": {
+        "label": "topic",
+        "purpose": "topic",
+        "tools": 7,
+        "preferred": 2,
+        "readOnly": 2,
+        "confirmationRequired": 1
       }
     },
     "workflow": [

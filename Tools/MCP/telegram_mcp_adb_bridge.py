@@ -91,6 +91,7 @@ class AdbMcpHttpBridge:
         self.url = url
         self.token = token
         self.protocol_version = protocol_version
+        self.session_id = ""
         self.adb_host = adb_host
         self.adb_port = adb_port
         self.guest_port = parsed.port or 80
@@ -150,6 +151,8 @@ class AdbMcpHttpBridge:
             "Accept": "application/json, text/event-stream",
             "MCP-Protocol-Version": self.protocol_version,
         }
+        if self.session_id:
+            headers["Mcp-Session-Id"] = self.session_id
         if data is not None:
             headers["Content-Type"] = "application/json; charset=utf-8"
             headers["Content-Length"] = str(len(data))
@@ -191,10 +194,21 @@ class AdbMcpHttpBridge:
             )
         finally:
             device.close()
-        return self._parse_http_response(raw)
+        status, response_headers, body = self._parse_http_response_details(raw)
+        returned_session = response_headers.get(b"mcp-session-id")
+        if returned_session:
+            self.session_id = returned_session.decode("ascii")
+        return status, body
 
     @classmethod
     def _parse_http_response(cls, raw: bytes) -> tuple[int, bytes]:
+        status, _, body = cls._parse_http_response_details(raw)
+        return status, body
+
+    @classmethod
+    def _parse_http_response_details(
+        cls, raw: bytes
+    ) -> tuple[int, dict[bytes, bytes], bytes]:
         marker = raw.find(b"\r\n\r\n")
         if marker < 0:
             raise RuntimeError(f"Malformed MCP HTTP response: {raw[:200]!r}")
@@ -208,12 +222,12 @@ class AdbMcpHttpBridge:
         for line in lines[1:]:
             if b":" in line:
                 name, value = line.split(b":", 1)
-                headers[name.strip().lower()] = value.strip().lower()
-        if headers.get(b"transfer-encoding") == b"chunked":
+                headers[name.strip().lower()] = value.strip()
+        if headers.get(b"transfer-encoding", b"").lower() == b"chunked":
             body = cls._decode_chunked(body)
         elif b"content-length" in headers:
             body = body[: int(headers[b"content-length"])]
-        return status, body
+        return status, headers, body
 
     @staticmethod
     def _decode_chunked(body: bytes) -> bytes:

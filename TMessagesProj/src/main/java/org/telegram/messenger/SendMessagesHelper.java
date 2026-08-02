@@ -2068,6 +2068,27 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
         long monoForumPeerId,
         MessageSuggestionParams suggestionParams
     ) {
+        return sendMessageWithLocalParams(messages, peer, forwardFromMyName,
+                hideCaption, notify, scheduleDate, scheduleRepeatPeriod,
+                replyToTopMsg, video_timestamp, payStars, monoForumPeerId,
+                suggestionParams, null);
+    }
+
+    public int sendMessageWithLocalParams(
+        ArrayList<MessageObject> messages,
+        final long peer,
+        boolean forwardFromMyName,
+        boolean hideCaption,
+        boolean notify,
+        int scheduleDate,
+        int scheduleRepeatPeriod,
+        MessageObject replyToTopMsg,
+        int video_timestamp,
+        long payStars,
+        long monoForumPeerId,
+        MessageSuggestionParams suggestionParams,
+        HashMap<String, String> localParams
+    ) {
         if (messages == null || messages.isEmpty()) {
             return 0;
         }
@@ -2095,7 +2116,11 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
             }
             if (currentPayStars != payStars) {
                 AlertsCreator.ensurePaidMessageConfirmation(currentAccount, peer, Math.max(1, messages.size()), newPayStars -> {
-                    sendMessage(messages, peer, forwardFromMyName, hideCaption, notify, scheduleDate, scheduleRepeatPeriod, replyToTopMsg, video_timestamp, newPayStars, monoForumPeerId, suggestionParams);
+                    sendMessageWithLocalParams(messages, peer, forwardFromMyName,
+                            hideCaption, notify, scheduleDate,
+                            scheduleRepeatPeriod, replyToTopMsg, video_timestamp,
+                            newPayStars, monoForumPeerId, suggestionParams,
+                            localParams);
                 });
                 return 0;
             }
@@ -2290,6 +2315,9 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                 newMsg.params = new HashMap<>();
                 newMsg.params.put("fwd_id", "" + msgObj.getId());
                 newMsg.params.put("fwd_peer", "" + msgObj.getDialogId());
+                if (localParams != null) {
+                    newMsg.params.putAll(localParams);
+                }
                 if (!msgObj.messageOwner.restriction_reason.isEmpty()) {
                     newMsg.restriction_reason = msgObj.messageOwner.restriction_reason;
                     newMsg.flags |= 4194304;

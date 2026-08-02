@@ -1444,7 +1444,7 @@ public class SharedConfig {
 
                         proxyList.add(0, info);
                         if (currentProxy == null && !TextUtils.isEmpty(proxyAddress)) {
-                            if (proxyAddress.equals(info.address) && proxyPort == info.port && proxyUsername.equals(info.username) && proxyPassword.equals(info.password)) {
+                            if (proxyAddress.equals(info.address) && proxyPort == info.port && proxyUsername.equals(info.username) && proxyPassword.equals(info.password) && proxySecret.equals(info.secret)) {
                                 currentProxy = info;
                             }
                         }
@@ -1462,7 +1462,7 @@ public class SharedConfig {
                             data.readString(false));
                     proxyList.add(0, info);
                     if (currentProxy == null && !TextUtils.isEmpty(proxyAddress)) {
-                        if (proxyAddress.equals(info.address) && proxyPort == info.port && proxyUsername.equals(info.username) && proxyPassword.equals(info.password)) {
+                        if (proxyAddress.equals(info.address) && proxyPort == info.port && proxyUsername.equals(info.username) && proxyPassword.equals(info.password) && proxySecret.equals(info.secret)) {
                             currentProxy = info;
                         }
                     }
@@ -1476,7 +1476,18 @@ public class SharedConfig {
         }
     }
 
-    public static void saveProxyList() {
+    public static boolean saveProxyList() {
+        SharedPreferences preferences = ApplicationLoader.applicationContext
+                .getSharedPreferences("mainconfig", Activity.MODE_PRIVATE);
+        return saveProxyList(preferences.edit());
+    }
+
+    /** Commits proxy_list together with any other mainconfig edits atomically. */
+    public static boolean saveProxyList(SharedPreferences.Editor editor) {
+        return editor.putString("proxy_list", serializeProxyList()).commit();
+    }
+
+    private static String serializeProxyList() {
         List<ProxyInfo> infoToSerialize = new ArrayList<>(proxyList);
         Collections.sort(infoToSerialize, (o1, o2) -> {
             long bias1 = SharedConfig.currentProxy == o1 ? -200000 : 0;
@@ -1505,9 +1516,10 @@ public class SharedConfig {
             serializedData.writeInt64(info.ping);
             serializedData.writeInt64(info.availableCheckTime);
         }
-        SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE);
-        preferences.edit().putString("proxy_list", Base64.encodeToString(serializedData.toByteArray(), Base64.NO_WRAP)).apply();
+        String encoded = Base64.encodeToString(
+                serializedData.toByteArray(), Base64.NO_WRAP);
         serializedData.cleanup();
+        return encoded;
     }
 
     public static ProxyInfo addProxy(ProxyInfo proxyInfo) {
@@ -1528,12 +1540,13 @@ public class SharedConfig {
         return MessagesController.getGlobalMainSettings().getBoolean("proxy_enabled", false) && currentProxy != null;
     }
 
-    public static void deleteProxy(ProxyInfo proxyInfo) {
-        if (currentProxy == proxyInfo) {
-            currentProxy = null;
-            SharedPreferences preferences = MessagesController.getGlobalMainSettings();
-            boolean enabled = preferences.getBoolean("proxy_enabled", false);
-            SharedPreferences.Editor editor = preferences.edit();
+    public static boolean deleteProxy(ProxyInfo proxyInfo) {
+        SharedPreferences preferences = MessagesController.getGlobalMainSettings();
+        boolean current = currentProxy == proxyInfo;
+        boolean enabled = current && preferences.getBoolean("proxy_enabled", false);
+        int oldIndex = proxyList.indexOf(proxyInfo);
+        SharedPreferences.Editor editor = preferences.edit();
+        if (current) {
             editor.putString("proxy_ip", "");
             editor.putString("proxy_pass", "");
             editor.putString("proxy_user", "");
@@ -1541,13 +1554,21 @@ public class SharedConfig {
             editor.putInt("proxy_port", 1080);
             editor.putBoolean("proxy_enabled", false);
             editor.putBoolean("proxy_enabled_calls", false);
-            editor.apply();
+        }
+        proxyList.remove(proxyInfo);
+        if (!saveProxyList(editor)) {
+            if (oldIndex >= 0 && !proxyList.contains(proxyInfo)) {
+                proxyList.add(Math.min(oldIndex, proxyList.size()), proxyInfo);
+            }
+            return false;
+        }
+        if (current) {
+            currentProxy = null;
             if (enabled) {
                 ConnectionsManager.setProxySettings(false, "", 0, "", "", "");
             }
         }
-        proxyList.remove(proxyInfo);
-        saveProxyList();
+        return true;
     }
 
     public static void checkSaveToGalleryFiles() {

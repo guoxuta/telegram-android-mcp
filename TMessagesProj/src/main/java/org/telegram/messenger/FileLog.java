@@ -499,7 +499,12 @@ public class FileLog {
         }
 
         FileLog.e("ANR thread dump\n" + sb.toString());
-        dumpMemory(false);
+        // Debug.dumpHprofData suspends the whole process.  Calling it from the
+        // five-second responsiveness watchdog can turn an ordinary slow cold
+        // start into a real input-dispatch ANR, then repeat that pause every
+        // thirty seconds.  Keep the complete thread dump above; explicit
+        // diagnostic actions and genuine OOM handling may still request an
+        // HPROF through dumpMemory().
     }
 
     public static void fatal(final Throwable e, boolean logToAppCenter) {
@@ -628,7 +633,9 @@ public class FileLog {
     public class ANRDetector {
         private final long TIMEOUT_MS = 5000; // ANR threshold (5 seconds)
         private final Handler mainHandler = new Handler(Looper.getMainLooper());
-        private boolean isUIThreadResponsive = true;
+        private volatile boolean isUIThreadResponsive = true;
+        private volatile boolean armed;
+        private volatile boolean reportedForCurrentStall;
 
         public ANRDetector(Runnable anrDetected) {
             new Thread(() -> {
@@ -636,7 +643,11 @@ public class FileLog {
                     isUIThreadResponsive = false;
 
                     // Post a task to the main thread
-                    mainHandler.post(() -> isUIThreadResponsive = true);
+                    mainHandler.post(() -> {
+                        isUIThreadResponsive = true;
+                        armed = true;
+                        reportedForCurrentStall = false;
+                    });
 
                     try {
                         Thread.sleep(TIMEOUT_MS);
@@ -644,7 +655,11 @@ public class FileLog {
                         e.printStackTrace();
                     }
 
-                    if (!isUIThreadResponsive) {
+                    // Do not diagnose the normal Application/Activity cold
+                    // start before the main looper has answered even once, and
+                    // emit only one dump for each continuous stall.
+                    if (armed && !isUIThreadResponsive && !reportedForCurrentStall) {
+                        reportedForCurrentStall = true;
                         anrDetected.run();
                     }
                 }

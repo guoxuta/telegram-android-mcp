@@ -7810,6 +7810,21 @@ public class MediaDataController extends BaseController {
                 req.message = draftMessage.message;
                 req.no_webpage = draftMessage.no_webpage;
                 req.reply_to = draftMessage.reply_to;
+                if (ChatObject.isForum(chat) && threadId > 1) {
+                    if (req.reply_to == null) {
+                        TLRPC.TL_inputReplyToMessage topicReply =
+                                new TLRPC.TL_inputReplyToMessage();
+                        topicReply.reply_to_msg_id = (int) threadId;
+                        topicReply.flags |= 1;
+                        topicReply.top_msg_id = (int) threadId;
+                        req.reply_to = topicReply;
+                    } else if (req.reply_to instanceof TLRPC.TL_inputReplyToMessage) {
+                        TLRPC.TL_inputReplyToMessage messageReply =
+                                (TLRPC.TL_inputReplyToMessage) req.reply_to;
+                        messageReply.flags |= 1;
+                        messageReply.top_msg_id = (int) threadId;
+                    }
+                }
                 req.suggested_post = draftMessage.suggested_post;
                 req.entities = draftMessage.entities;
                 if (draftMessage.rich_message != null) {

@@ -191,6 +191,31 @@ Invoke-SelectedAdb `
 Invoke-SelectedAdb `
   -Arguments @("-s", $Serial, "forward", "tcp:$mcpPort", "tcp:$mcpPort") | Out-Null
 
+# Token creation precedes the asynchronous catalog/server bootstrap.  Wait for
+# the forwarded health endpoint so callers do not race a valid token against a
+# loopback port that is not listening yet.
+$serverReady = $false
+for ($attempt = 1; $attempt -le 45; $attempt++) {
+  try {
+    $health = Invoke-WebRequest `
+      -Uri "http://127.0.0.1:$mcpPort/health" `
+      -Headers @{ Authorization = "Bearer $token" } `
+      -UseBasicParsing `
+      -TimeoutSec 2
+    if ($health.StatusCode -eq 200) {
+      $serverReady = $true
+      break
+    }
+  } catch {
+    # The app may still be parsing the generated catalog; retry until the
+    # bounded startup deadline instead of leaking the bearer token in errors.
+  }
+  Start-Sleep -Seconds 1
+}
+if (-not $serverReady) {
+  throw "Telegram MCP did not become ready on the forwarded port within 45 seconds."
+}
+
 if (-not $AgentArguments -or $AgentArguments.Count -eq 0) {
   $AgentArguments = @("doctor")
 }

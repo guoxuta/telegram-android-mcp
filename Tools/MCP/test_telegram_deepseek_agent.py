@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import re
 import sys
 import tempfile
 import unittest
@@ -45,6 +46,7 @@ def live_tools_from_asset() -> dict[str, dict[str, Any]]:
             "title": source.get("title") or "",
             "description": source["description"],
             "inputSchema": source["input_schema"],
+            "outputSchema": source["output_schema"],
             "annotations": {
                 "readOnlyHint": source["read_only"],
                 "destructiveHint": source["destructive"],
@@ -80,24 +82,137 @@ class TelegramAgentTests(unittest.TestCase):
         cls.catalog = TelegramToolCatalog(cls.tools)
 
     def test_catalog_has_all_unique_expected_tools(self) -> None:
-        self.assertEqual(46, len(self.tools))
-        self.assertEqual(46, len(self.catalog.descriptors))
+        self.assertEqual(201, len(self.tools))
+        self.assertEqual(201, len(self.catalog.descriptors))
         self.assertEqual(
             {
                 "account",
+                "bot",
+                "business",
+                "call",
                 "chat",
                 "contact",
                 "dialog",
                 "draft",
+                "file",
+                "folder",
+                "gif",
                 "message",
+                "network",
+                "notification",
+                "payments",
                 "peer",
+                "privacy",
                 "profile",
+                "proxy",
+                "qr",
+                "quick_reply",
+                "security",
                 "session",
                 "settings",
+                "sticker",
+                "storage",
+                "story",
                 "system",
+                "topic",
             },
             {item.domain for item in self.catalog.descriptors.values()},
         )
+
+    def test_core_output_contracts_are_typed_and_not_all_generic(self) -> None:
+        serialized = {
+            json.dumps(tool["outputSchema"], sort_keys=True)
+            for tool in self.tools.values()
+        }
+        self.assertGreater(len(serialized), 1)
+        expected_required = {
+            "telegram.message.send_text": {
+                "message_ids",
+                "operation_id",
+                "committed",
+                "readback",
+            },
+            "telegram.file.put_base64": {
+                "file_ref",
+                "size",
+                "sha256",
+                "operation_id",
+                "committed",
+            },
+            "telegram.file.upload_begin": {
+                "upload_ref",
+                "state",
+                "total_size",
+                "final_present",
+            },
+            "telegram.file.upload_commit": {
+                "upload_ref",
+                "file_ref",
+                "size",
+                "sha256",
+            },
+        }
+        for name, required in expected_required.items():
+            output_schema = self.tools[name]["outputSchema"]
+            success_data = output_schema["oneOf"][0]["properties"]["data"]
+            self.assertEqual(required, set(success_data.get("required") or []))
+
+    def test_staging_cleanup_and_consumers_share_service_monitor(self) -> None:
+        service = (
+            REPOSITORY_ROOT
+            / "TMessagesProj"
+            / "src"
+            / "main"
+            / "java"
+            / "org"
+            / "telegram"
+            / "messenger"
+            / "mcp"
+            / "TelegramMcpService.java"
+        ).read_text(encoding="utf-8")
+        for method in (
+            "fileList",
+            "fileGet",
+            "filePutBase64",
+            "fileUploadBegin",
+            "fileUploadList",
+            "fileUploadStatus",
+            "fileUploadAppend",
+            "fileUploadCommit",
+            "fileUploadCancel",
+            "fileReadBase64",
+            "fileDelete",
+            "fileDownloadMessage",
+            "qrEncode",
+            "qrDecodeFile",
+            "messageSendMedia",
+            "storyPublish",
+            "storyEdit",
+            "chatPhotoUpload",
+            "profilePhotoUpload",
+            "storageCacheClear",
+        ):
+            self.assertRegex(
+                service,
+                rf"private\s+synchronized\s+JsonObject\s+{method}\s*\(",
+                method,
+            )
+
+    def test_runtime_dispatch_exactly_matches_catalog(self) -> None:
+        service = (
+            REPOSITORY_ROOT
+            / "TMessagesProj"
+            / "src"
+            / "main"
+            / "java"
+            / "org"
+            / "telegram"
+            / "messenger"
+            / "mcp"
+            / "TelegramMcpService.java"
+        ).read_text(encoding="utf-8")
+        dispatched = set(re.findall(r'case "(telegram\.[^"]+)"', service))
+        self.assertEqual(set(self.tools), dispatched)
 
     def test_gateway_names_are_stable_and_unique(self) -> None:
         names = [item["function"]["name"] for item in GATEWAY_TOOLS]
@@ -183,10 +298,10 @@ class TelegramAgentTests(unittest.TestCase):
     def test_prompt_placeholders_and_session_isolation(self) -> None:
         prompt = load_system_prompt(
             REPOSITORY_ROOT / "agent" / "prompts" / "system_zh.md",
-            tool_count=46,
+            tool_count=len(self.tools),
             model="deepseek-test",
         )
-        self.assertIn("46", prompt)
+        self.assertIn(str(len(self.tools)), prompt)
         self.assertIn("deepseek-test", prompt)
         self.assertNotIn("{{TOOL_COUNT}}", prompt)
         with tempfile.TemporaryDirectory() as directory:

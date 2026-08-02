@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
@@ -26,6 +27,9 @@ import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -38,17 +42,21 @@ import fi.iki.elonen.NanoHTTPD;
  */
 public final class TelegramMcpServer extends NanoHTTPD {
     public static final int PORT = 19876;
-    public static final String PROTOCOL_VERSION = "2025-03-26";
-    public static final String SERVER_VERSION = "0.1.0";
+    public static final String PROTOCOL_VERSION = "2025-06-18";
+    public static final String SERVER_VERSION = "0.2.0";
 
     private static final int MAX_BODY_BYTES = 1024 * 1024;
+    private static final long SESSION_TTL_MILLIS = TimeUnit.HOURS.toMillis(12);
     private static final Gson GSON = new Gson();
     private static volatile TelegramMcpServer instance;
+    private static boolean starting;
 
     private final TelegramMcpService service;
     private final String bearerToken;
     private final JsonObject catalog;
     private final Map<String, JsonObject> catalogTools = new HashMap<>();
+    private final Map<String, McpSession> sessions = new ConcurrentHashMap<>();
+    private final SecureRandom secureRandom = new SecureRandom();
 
     private TelegramMcpServer(Context context) throws Exception {
         super("127.0.0.1", PORT);
@@ -58,22 +66,34 @@ public final class TelegramMcpServer extends NanoHTTPD {
             JsonObject tool = element.getAsJsonObject();
             catalogTools.put(getString(tool, "name", ""), tool);
         }
-        service = new TelegramMcpService();
+        service = new TelegramMcpService(bearerToken, catalogTools.size());
     }
 
     /** Starts the local server once. Release/standalone builds never call this. */
     public static synchronized void startIfEnabled() {
-        if (!BuildVars.DEBUG_VERSION || instance != null) {
+        if (!BuildVars.DEBUG_VERSION || instance != null || starting) {
             return;
         }
-        try {
-            TelegramMcpServer server = new TelegramMcpServer(ApplicationLoader.applicationContext);
-            server.start(SOCKET_READ_TIMEOUT, false);
-            instance = server;
-            FileLog.d("Telegram MCP listening on device loopback port " + PORT);
-        } catch (Throwable error) {
-            FileLog.e(error);
-        }
+        starting = true;
+        Thread bootstrap = new Thread(() -> {
+            try {
+                TelegramMcpServer server = new TelegramMcpServer(
+                        ApplicationLoader.applicationContext);
+                server.start(SOCKET_READ_TIMEOUT, false);
+                synchronized (TelegramMcpServer.class) {
+                    instance = server;
+                    starting = false;
+                }
+                FileLog.d("Telegram MCP listening on device loopback port " + PORT);
+            } catch (Throwable error) {
+                synchronized (TelegramMcpServer.class) {
+                    starting = false;
+                }
+                FileLog.e(error);
+            }
+        }, "TelegramMcpBootstrap");
+        bootstrap.setDaemon(true);
+        bootstrap.start();
     }
 
     @Override
@@ -93,12 +113,37 @@ public final class TelegramMcpServer extends NanoHTTPD {
                     "UNAUTHORIZED", "Missing or invalid bearer token", false, null));
         }
 
+        if (!isAllowedOrigin(session.getHeaders().get("origin"))) {
+            return jsonHttp(Response.Status.FORBIDDEN, errorEnvelope(
+                    "ORIGIN_FORBIDDEN", "Origin must be absent or a loopback HTTP origin", false, null));
+        }
+
         if (Method.GET.equals(session.getMethod()) && "/health".equals(session.getUri())) {
             return jsonHttp(Response.Status.OK, service.health());
         }
-        if (!Method.POST.equals(session.getMethod()) || !"/mcp".equals(session.getUri())) {
+        if (!"/mcp".equals(session.getUri())) {
             return jsonHttp(Response.Status.NOT_FOUND, errorEnvelope(
                     "NOT_FOUND", "Use POST /mcp or GET /health", false, null));
+        }
+        if (Method.GET.equals(session.getMethod())) {
+            Response response = jsonHttp(Response.Status.METHOD_NOT_ALLOWED, errorEnvelope(
+                    "METHOD_NOT_ALLOWED", "This server does not expose an MCP SSE stream", false, null));
+            response.addHeader("Allow", "POST, DELETE");
+            return response;
+        }
+        if (Method.DELETE.equals(session.getMethod())) {
+            String sessionId = session.getHeaders().get("mcp-session-id");
+            if (sessionId == null || sessions.remove(sessionId) == null) {
+                return jsonHttp(Response.Status.NOT_FOUND, errorEnvelope(
+                        "SESSION_NOT_FOUND", "MCP session is unknown or expired", false, null));
+            }
+            return newFixedLengthResponse(Response.Status.OK, "application/json", "");
+        }
+        if (!Method.POST.equals(session.getMethod())) {
+            Response response = jsonHttp(Response.Status.METHOD_NOT_ALLOWED, errorEnvelope(
+                    "METHOD_NOT_ALLOWED", "Use POST /mcp", false, null));
+            response.addHeader("Allow", "POST, DELETE");
+            return response;
         }
 
         String lengthHeader = session.getHeaders().get("content-length");
@@ -139,6 +184,11 @@ public final class TelegramMcpServer extends NanoHTTPD {
         }
 
         JsonObject request = parsed.getAsJsonObject();
+        if (!"2.0".equals(getString(request, "jsonrpc", null))) {
+            return jsonHttp(Response.Status.BAD_REQUEST, rpcError(request.get("id"), -32600,
+                    "jsonrpc must equal 2.0", null));
+        }
+        boolean hasId = request.has("id");
         JsonElement id = request.get("id");
         String method = getString(request, "method", null);
         if (method == null) {
@@ -148,31 +198,82 @@ public final class TelegramMcpServer extends NanoHTTPD {
 
         JsonObject params = request.has("params") && request.get("params").isJsonObject()
                 ? request.getAsJsonObject("params") : new JsonObject();
+        if ("initialize".equals(method)) {
+            if (!hasId) {
+                return jsonHttp(Response.Status.BAD_REQUEST, rpcError(null, -32600,
+                        "initialize must be a JSON-RPC request with an id", null));
+            }
+            String requestedVersion = getString(params, "protocolVersion", "");
+            if (!PROTOCOL_VERSION.equals(requestedVersion)) {
+                JsonObject details = new JsonObject();
+                details.addProperty("supported", PROTOCOL_VERSION);
+                details.addProperty("requested", requestedVersion);
+                return jsonHttp(Response.Status.BAD_REQUEST, rpcError(id, -32602,
+                        "Unsupported MCP protocol version", details));
+            }
+            cleanupExpiredSessions();
+            String sessionId = randomHex(32);
+            sessions.put(sessionId, new McpSession(PROTOCOL_VERSION));
+            Response response = jsonHttp(Response.Status.OK,
+                    rpcResult(id, initializeResult()));
+            response.addHeader("Mcp-Session-Id", sessionId);
+            response.addHeader("MCP-Protocol-Version", PROTOCOL_VERSION);
+            return response;
+        }
+
+        McpSession mcpSession = requireSession(session);
+        if (mcpSession == null) {
+            return jsonHttp(Response.Status.NOT_FOUND, rpcError(id, -32001,
+                    "MCP session is unknown or expired; initialize again", null));
+        }
+        String protocolHeader = session.getHeaders().get("mcp-protocol-version");
+        if (!mcpSession.protocolVersion.equals(protocolHeader)) {
+            JsonObject details = new JsonObject();
+            details.addProperty("expected", mcpSession.protocolVersion);
+            details.addProperty("received", protocolHeader == null ? "" : protocolHeader);
+            return jsonHttp(Response.Status.BAD_REQUEST, rpcError(id, -32600,
+                    "Missing or mismatched MCP-Protocol-Version header", details));
+        }
+        mcpSession.touch();
+
+        if (!hasId) {
+            if ("notifications/initialized".equals(method)) {
+                mcpSession.initialized = true;
+            }
+            return newFixedLengthResponse(Response.Status.ACCEPTED, "application/json", "");
+        }
+        if (!mcpSession.initialized && !"ping".equals(method)) {
+            return jsonHttp(Response.Status.BAD_REQUEST, rpcError(id, -32002,
+                    "Send notifications/initialized before normal MCP operations", null));
+        }
+
         JsonElement result;
-        switch (method) {
-            case "initialize":
-                result = initializeResult();
-                break;
-            case "notifications/initialized":
-                return newFixedLengthResponse(Response.Status.NO_CONTENT, "application/json", "");
-            case "ping":
-                result = new JsonObject();
-                break;
-            case "tools/list":
-                result = toolsList();
-                break;
-            case "tools/call":
-                result = callTool(params);
-                break;
-            case "resources/list":
-                result = resourcesList();
-                break;
-            case "resources/read":
-                result = readResource(params);
-                break;
-            default:
-                return jsonHttp(Response.Status.OK, rpcError(id, -32601,
-                        "Unsupported MCP method: " + method, null));
+        try {
+            switch (method) {
+                case "ping":
+                    result = new JsonObject();
+                    break;
+                case "tools/list":
+                    result = toolsList();
+                    break;
+                case "tools/call":
+                    result = callTool(params);
+                    break;
+                case "resources/list":
+                    result = resourcesList();
+                    break;
+                case "resources/read":
+                    result = readResource(params);
+                    break;
+                default:
+                    return jsonHttp(Response.Status.OK, rpcError(id, -32601,
+                            "Unsupported MCP method: " + method, null));
+            }
+        } catch (TelegramMcpService.McpException error) {
+            JsonObject data = errorEnvelope(error.code, error.getMessage(), error.retryable, error.details);
+            return jsonHttp(Response.Status.OK, rpcError(id,
+                    "RESOURCE_NOT_FOUND".equals(error.code) ? -32002 : -32602,
+                    error.getMessage(), data));
         }
         return jsonHttp(Response.Status.OK, rpcResult(id, result));
     }
@@ -204,6 +305,9 @@ public final class TelegramMcpServer extends NanoHTTPD {
             tool.addProperty("title", getString(source, "title", ""));
             tool.addProperty("description", getString(source, "description", ""));
             tool.add("inputSchema", source.getAsJsonObject("input_schema").deepCopy());
+            if (source.has("output_schema") && source.get("output_schema").isJsonObject()) {
+                tool.add("outputSchema", source.getAsJsonObject("output_schema").deepCopy());
+            }
             JsonObject annotations = new JsonObject();
             annotations.addProperty("readOnlyHint", getBoolean(source, "read_only", false));
             annotations.addProperty("destructiveHint", getBoolean(source, "destructive", false));
@@ -254,10 +358,21 @@ public final class TelegramMcpServer extends NanoHTTPD {
             }
             validateSchema(arguments, tool.getAsJsonObject("input_schema"), "arguments");
             structured = service.call(name, arguments);
+            try {
+                validateSchema(structured,
+                        tool.getAsJsonObject("output_schema"), "structuredContent");
+            } catch (TelegramMcpService.McpException contractError) {
+                throw new IllegalStateException(
+                        "Tool returned output that violates its catalog contract: "
+                                + name, contractError);
+            }
+            service.ensureIdempotencyCompletedOnSuccess();
         } catch (TelegramMcpService.McpException error) {
+            service.finishIdempotencyAfterError(error);
             failed = true;
             structured = errorEnvelope(error.code, error.getMessage(), error.retryable, error.details);
         } catch (Throwable error) {
+            service.finishIdempotencyAfterThrowable(error);
             FileLog.e(error);
             failed = true;
             structured = errorEnvelope("INTERNAL_ERROR", "Tool execution failed", true, null);
@@ -280,6 +395,22 @@ public final class TelegramMcpServer extends NanoHTTPD {
             JsonElement value,
             JsonObject schema,
             String path) throws TelegramMcpService.McpException {
+        if (schema.has("oneOf") && schema.get("oneOf").isJsonArray()) {
+            int matches = 0;
+            for (JsonElement candidate : schema.getAsJsonArray("oneOf")) {
+                if (!candidate.isJsonObject()) continue;
+                try {
+                    validateSchema(value, candidate.getAsJsonObject(), path);
+                    matches++;
+                } catch (TelegramMcpService.McpException ignored) {
+                    // A oneOf branch is expected to reject values for other branches.
+                }
+            }
+            if (matches != 1) {
+                invalidSchema(path, "must match exactly one output variant");
+            }
+            return;
+        }
         String type = getString(schema, "type", "");
         switch (type) {
             case "object":
@@ -298,6 +429,9 @@ public final class TelegramMcpServer extends NanoHTTPD {
                 break;
             case "integer":
                 validateInteger(value, schema, path);
+                break;
+            case "number":
+                validateNumber(value, schema, path);
                 break;
             case "boolean":
                 if (!value.isJsonPrimitive() || !value.getAsJsonPrimitive().isBoolean()) {
@@ -390,6 +524,11 @@ public final class TelegramMcpServer extends NanoHTTPD {
         if (value.length() < minLength || value.length() > maxLength) {
             invalidSchema(path, "length must be between " + minLength + " and " + maxLength);
         }
+        if (schema.has("pattern")
+                && !Pattern.compile(schema.get("pattern").getAsString())
+                .matcher(value).find()) {
+            invalidSchema(path, "must match " + schema.get("pattern"));
+        }
         if ("date-time".equals(getString(schema, "format", ""))) {
             try {
                 Instant.parse(value);
@@ -414,6 +553,30 @@ public final class TelegramMcpServer extends NanoHTTPD {
             return;
         }
         if (number.stripTrailingZeros().scale() > 0) invalidSchema(path, "must be an integer");
+        if (schema.has("minimum")
+                && number.compareTo(schema.get("minimum").getAsBigDecimal()) < 0) {
+            invalidSchema(path, "must be >= " + schema.get("minimum"));
+        }
+        if (schema.has("maximum")
+                && number.compareTo(schema.get("maximum").getAsBigDecimal()) > 0) {
+            invalidSchema(path, "must be <= " + schema.get("maximum"));
+        }
+    }
+
+    private static void validateNumber(
+            JsonElement value,
+            JsonObject schema,
+            String path) throws TelegramMcpService.McpException {
+        if (!value.isJsonPrimitive() || !value.getAsJsonPrimitive().isNumber()) {
+            invalidSchema(path, "must be a number");
+        }
+        BigDecimal number;
+        try {
+            number = value.getAsBigDecimal();
+        } catch (Throwable error) {
+            invalidSchema(path, "must be a finite number");
+            return;
+        }
         if (schema.has("minimum")
                 && number.compareTo(schema.get("minimum").getAsBigDecimal()) < 0) {
             invalidSchema(path, "must be >= " + schema.get("minimum"));
@@ -466,6 +629,53 @@ public final class TelegramMcpServer extends NanoHTTPD {
         byte[] expected = bearerToken.getBytes(StandardCharsets.UTF_8);
         byte[] supplied = header.substring("Bearer ".length()).getBytes(StandardCharsets.UTF_8);
         return MessageDigest.isEqual(expected, supplied);
+    }
+
+    private McpSession requireSession(IHTTPSession httpSession) {
+        cleanupExpiredSessions();
+        String sessionId = httpSession.getHeaders().get("mcp-session-id");
+        if (sessionId == null) {
+            return null;
+        }
+        McpSession value = sessions.get(sessionId);
+        if (value != null && value.expiresAtMillis < System.currentTimeMillis()) {
+            sessions.remove(sessionId, value);
+            return null;
+        }
+        return value;
+    }
+
+    private void cleanupExpiredSessions() {
+        long now = System.currentTimeMillis();
+        sessions.entrySet().removeIf(entry -> entry.getValue().expiresAtMillis < now);
+    }
+
+    private boolean isAllowedOrigin(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return true;
+        }
+        try {
+            URI origin = URI.create(value.trim());
+            String scheme = origin.getScheme();
+            String host = origin.getHost();
+            return ("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme))
+                    && host != null
+                    && ("localhost".equalsIgnoreCase(host)
+                    || "127.0.0.1".equals(host)
+                    || "::1".equals(host));
+        } catch (Throwable ignore) {
+            return false;
+        }
+    }
+
+    private String randomHex(int bytes) {
+        byte[] random = new byte[bytes];
+        secureRandom.nextBytes(random);
+        StringBuilder builder = new StringBuilder(bytes * 2);
+        for (byte value : random) {
+            builder.append(String.format(java.util.Locale.US, "%02x", value & 0xff));
+        }
+        return builder.toString();
     }
 
     private static JsonObject rpcResult(JsonElement id, JsonElement result) {
@@ -586,6 +796,21 @@ public final class TelegramMcpServer extends NanoHTTPD {
                     ? object.get(key).getAsInt() : fallback;
         } catch (Throwable ignore) {
             return fallback;
+        }
+    }
+
+    private static final class McpSession {
+        final String protocolVersion;
+        volatile boolean initialized;
+        volatile long expiresAtMillis;
+
+        McpSession(String protocolVersion) {
+            this.protocolVersion = protocolVersion;
+            touch();
+        }
+
+        void touch() {
+            expiresAtMillis = System.currentTimeMillis() + SESSION_TTL_MILLIS;
         }
     }
 }

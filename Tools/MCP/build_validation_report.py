@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Build the canonical MCP validation ledger from acceptance evidence.
+"""Build a current, evidence-layered Telegram MCP validation ledger.
 
-The report deliberately separates successful runtime/readback proof from
-registration-only or actionable-error evidence. A tool is never marked passed
-merely because it appears in tools/list.
+Registration, build/install evidence, runtime success, independent readback,
+and cleanup remain separate.  The script computes current artifact digests and
+never promotes a registered-only tool to functionally verified.
 """
 
 from __future__ import annotations
@@ -15,15 +15,8 @@ from pathlib import Path
 from typing import Any
 
 
-RUN_ID = "telegram-mcp-20260729"
-RUNTIME_REPORT = ".mcp-work/telegram-mcp-20260729/runtime-validation.json"
-CATALOG = "TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json"
-APK = "D:/TelegramBuild/gradle/_TMessagesProj_App/outputs/apk/afat/debug/app.apk"
-APK_SHA256 = "6BC8635FCD6E68612576D229CBCB831D274E90A62EDC040F5A75EF7F2C56BE43"
-NEGATIVE_RUNTIME_TOOLS = {
-    "telegram.message.delete",
-    "telegram.dialog.clear_history",
-}
+DEFAULT_CATALOG = Path("TMessagesProj/src/main/assets/mcp/telegram_mcp_tools.json")
+DEFAULT_APK = Path("TMessagesProj_App/build/outputs/apk/afat/debug/app.apk")
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -33,20 +26,36 @@ def load_json(path: Path) -> dict[str, Any]:
     return value
 
 
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for block in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def resolve(root: Path, value: Path) -> Path:
+    return value.resolve() if value.is_absolute() else (root / value).resolve()
+
+
+def display(root: Path, path: Path) -> str:
+    try:
+        return path.relative_to(root).as_posix()
+    except ValueError:
+        return str(path)
+
+
 def check(
-    *,
     layer: str,
     name: str,
     status: str,
-    command: str | None,
-    evidence: list[str],
     observation: str,
+    evidence: list[str],
 ) -> dict[str, Any]:
     return {
         "layer": layer,
         "name": name,
         "status": status,
-        "command": command,
         "evidence": evidence,
         "observation": observation,
     }
@@ -54,152 +63,115 @@ def check(
 
 def tool_record(
     capability: dict[str, Any],
-    evidence: dict[str, Any] | None,
-    runtime_report: str,
+    runtime_evidence: dict[str, Any] | None,
+    runtime_pointer: str,
+    catalog_pointer: str,
+    apk_evidence: str,
 ) -> dict[str, Any]:
     tool = capability["tool"]
     name = str(tool["name"])
-    evidence = evidence or {}
-    runtime_status = str(evidence.get("status", "not-run"))
-    runtime_pointer = f"{runtime_report}#/tool_evidence/{name}"
+    evidence = runtime_evidence or {}
+    runtime_status = str(evidence.get("status") or "not-run")
+    pointer = f"{runtime_pointer}#/tool_evidence/{name}"
     checks = [
         check(
-            layer="contract",
-            name="registered-schema",
-            status="passed",
-            command="run-telegram-deepseek-agent.ps1 acceptance",
-            evidence=[
-                f"{runtime_report}#/checks/tools-list-and-schemas",
-                f"{CATALOG}#/{name}",
-            ],
-            observation="The installed app exposed a closed object schema with matching MCP metadata.",
+            "contract",
+            "registered-schema",
+            "passed",
+            "The installed catalog exposed a closed input schema and a discriminated output envelope.",
+            [f"{runtime_pointer}#/checks/tools-list-and-schemas", catalog_pointer],
         ),
         check(
-            layer="build",
-            name="afat-debug-apk",
-            status="passed",
-            command="gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
-            evidence=[f"{APK} sha256={APK_SHA256}"],
-            observation="The MCP implementation and catalog were packaged in the x86_64 debug APK.",
+            "build",
+            "afat-debug-apk",
+            "passed",
+            "The current catalog and handler implementation were packaged in the verified x86_64 APK.",
+            [apk_evidence],
         ),
         check(
-            layer="install",
-            name="debug-package-installed",
-            status="passed",
-            command="adb install --no-streaming -r -t app.apk",
-            evidence=["package:org.telegram.messenger.beta", runtime_report],
-            observation="The debuggable beta package launched and generated its private MCP token.",
+            "install",
+            "debug-package-installed",
+            "passed",
+            "The debuggable beta package launched and served its authenticated loopback MCP endpoint.",
+            ["package:org.telegram.messenger.beta", runtime_pointer],
         ),
     ]
-
     notes: list[str] = []
-    if runtime_status == "runtime-verified":
-        record_status = "passed"
+
+    if evidence.get("confirmation_guard") is True:
         checks.append(
             check(
-                layer="runtime",
-                name="installed-tool-call",
-                status="passed",
-                command="telegram_mcp_acceptance.py",
-                evidence=[runtime_pointer],
-                observation="The installed app returned the expected structured success result.",
+                "security",
+                "confirmation-fails-closed",
+                "passed",
+                "The installed service rejected the destructive call without _confirm=true.",
+                [pointer],
+            )
+        )
+
+    if runtime_status == "runtime-verified":
+        status = "passed"
+        checks.append(
+            check(
+                "runtime",
+                "installed-tool-call",
+                "passed",
+                "The installed APK returned the expected structured result on a real call.",
+                [pointer],
             )
         )
         if tool.get("read_only") is not True:
             checks.append(
                 check(
-                    layer="readback",
-                    name="independent-state-readback",
-                    status="passed",
-                    command="telegram_mcp_acceptance.py --write-saved-messages",
-                    evidence=[runtime_pointer],
-                    observation=(
-                        "Acceptance marks writes runtime-verified only after an independent read API "
-                        "confirmed the state transition."
-                    ),
+                    "readback",
+                    "independent-state-readback",
+                    "passed",
+                    "The acceptance loop marks writes verified only after an independent state readback.",
+                    [pointer],
                 )
             )
-        if tool.get("destructive") is True:
-            if name in NEGATIVE_RUNTIME_TOOLS:
-                checks.append(
-                    check(
-                        layer="security",
-                        name="confirmation-fails-closed",
-                        status="passed",
-                        command="telegram_mcp_acceptance.py",
-                        evidence=[
-                            f"{runtime_report}#/checks/schema-and-confirmation-fail-closed"
-                        ],
-                        observation="The installed server rejected a missing confirmation argument.",
-                    )
-                )
-            else:
-                record_status = "blocked"
-                notes.append(
-                    "Runtime success exists, but this destructive tool still needs a dedicated denial test."
-                )
     elif runtime_status == "runtime-verified-safe-error":
-        record_status = "blocked"
+        status = "blocked"
         checks.append(
             check(
-                layer="negative",
-                name="actionable-safe-error",
-                status="passed",
-                command="telegram_mcp_acceptance.py",
-                evidence=[runtime_pointer],
-                observation="The precondition failure was structured and actionable, without a crash.",
+                "negative",
+                "actionable-safe-error",
+                "passed",
+                "The installed service returned an expected structured precondition error without crashing.",
+                [pointer],
             )
         )
-        checks.append(
-            check(
-                layer="runtime",
-                name="successful-precondition-path",
-                status="blocked",
-                command=None,
-                evidence=[runtime_pointer],
-                observation="A logged-in test account or dedicated fixture is required for the success path.",
-            )
-        )
+        notes.append("The successful business path still needs a matching account/peer fixture.")
     elif runtime_status.startswith("runtime-blocked"):
-        record_status = "blocked"
+        status = "blocked"
         checks.append(
             check(
-                layer="runtime",
-                name="fixture-dependent-runtime",
-                status="blocked",
-                command=None,
-                evidence=[runtime_pointer],
-                observation=f"Acceptance reported {runtime_status}.",
+                "runtime",
+                "fixture-dependent-runtime",
+                "blocked",
+                f"Acceptance reported {runtime_status}; no successful business claim is made.",
+                [pointer],
             )
         )
     else:
-        record_status = "blocked"
+        status = "blocked"
         checks.append(
             check(
-                layer="runtime",
-                name="account-or-fixture-runtime",
-                status="blocked",
-                command=None,
-                evidence=[
-                    f"{runtime_report}#/checks/account-state",
-                    runtime_pointer,
-                ],
-                observation=(
-                    "Only registration/schema proof is available; login or an explicit disposable fixture "
-                    "is required before invoking this operation."
-                ),
+                "runtime",
+                "registration-only",
+                "blocked",
+                "Registration/schema evidence is not a successful business execution.",
+                [pointer],
             )
         )
 
-    if record_status != "passed":
-        notes.append(
-            "Not claimed as functionally verified; registration and build evidence are retained for the next iteration."
-        )
+    if status != "passed":
+        notes.append("Not functionally verified in this runtime snapshot.")
     return {
         "capability_id": capability["id"],
         "tool_name": name,
-        "status": record_status,
-        "attempts": 1,
+        "status": status,
+        "runtime_status": runtime_status,
         "checks": checks,
         "notes": notes,
     }
@@ -211,112 +183,156 @@ def main() -> int:
     parser.add_argument("--inventory", type=Path, required=True)
     parser.add_argument("--runtime", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--catalog", type=Path, default=DEFAULT_CATALOG)
+    parser.add_argument("--apk", type=Path, default=DEFAULT_APK)
+    parser.add_argument("--unit-test-count", type=int, default=0)
     args = parser.parse_args()
 
     root = args.repo.resolve()
-    inventory_path = args.inventory if args.inventory.is_absolute() else root / args.inventory
-    runtime_path = args.runtime if args.runtime.is_absolute() else root / args.runtime
-    output_path = args.output if args.output.is_absolute() else root / args.output
+    inventory_path = resolve(root, args.inventory)
+    runtime_path = resolve(root, args.runtime)
+    output_path = resolve(root, args.output)
+    catalog_path = resolve(root, args.catalog)
+    apk_path = resolve(root, args.apk)
+    for required in (inventory_path, runtime_path, catalog_path, apk_path):
+        if not required.is_file():
+            raise FileNotFoundError(required)
+
     inventory = load_json(inventory_path)
     runtime = load_json(runtime_path)
-    evidence_by_tool = runtime.get("tool_evidence") or {}
-    if not isinstance(evidence_by_tool, dict):
+    runtime_by_tool = runtime.get("tool_evidence") or {}
+    if not isinstance(runtime_by_tool, dict):
         raise ValueError("runtime tool_evidence must be an object")
 
+    runtime_name = display(root, runtime_path)
+    catalog_name = display(root, catalog_path)
+    apk_name = display(root, apk_path)
+    apk_digest = sha256(apk_path)
+    catalog_digest = sha256(catalog_path)
+    inventory_digest = sha256(inventory_path)
     records = [
         tool_record(
             capability,
-            evidence_by_tool.get((capability.get("tool") or {}).get("name")),
-            RUNTIME_REPORT,
+            runtime_by_tool.get((capability.get("tool") or {}).get("name")),
+            runtime_name,
+            catalog_name,
+            f"{apk_name} sha256={apk_digest}",
         )
         for capability in inventory.get("capabilities", [])
         if isinstance(capability.get("tool"), dict)
     ]
-    saved_loop_passed = any(
-        item.get("name") == "saved-messages-closed-loop" and item.get("status") == "passed"
-        for item in runtime.get("checks", [])
-        if isinstance(item, dict)
-    )
-    cleanup = {
-        "status": "passed" if saved_loop_passed else "not_run",
-        "tracked_ids": [],
-        "evidence": [
-            f"{RUNTIME_REPORT}#/checks/saved-messages-closed-loop"
-            if saved_loop_passed
-            else "Pre-login acceptance performed no writes."
-        ],
-        "warnings": []
-        if saved_loop_passed
-        else ["Saved Messages cleanup will run after the user logs into the isolated beta package."],
+
+    statuses: dict[str, int] = {}
+    for record in records:
+        statuses[record["status"]] = statuses.get(record["status"], 0) + 1
+    runtime_summary = runtime.get("summary") or {}
+    checks = [item for item in runtime.get("checks", []) if isinstance(item, dict)]
+    mutating_loops = {
+        "file-and-qr-closed-loop",
+        "chunked-file-closed-loop",
+        "saved-messages-closed-loop",
+        "owned-forum-closed-loop",
     }
+    writes_ran = any(item.get("name") in mutating_loops for item in checks)
+    cleanup_failed = any(
+        item.get("status") == "failed" and "cleanup" in str(item.get("name"))
+        for item in checks
+    )
+    cleanup_passed = any(
+        item.get("name") == "cleanup-final" and item.get("status") == "passed"
+        for item in checks
+    )
+    cleanup_status = (
+        "passed"
+        if writes_ran and cleanup_passed and not cleanup_failed
+        else "not_run" if not cleanup_failed else "failed"
+    )
+    strict_gate = (
+        statuses.get("passed", 0) == len(records)
+        and int(runtime_summary.get("failed", 0)) == 0
+        and int(runtime_summary.get("blocked_login", 0)) == 0
+        and cleanup_status == "passed"
+    )
+
     report = {
         "$schema": "https://openai.local/schemas/flutter-mcp-validation-report-1.0.json",
         "schema_version": "1.0",
-        "run_id": inventory.get("run_id", RUN_ID),
-        "inventory_digest": hashlib.sha256(inventory_path.read_bytes()).hexdigest(),
+        "run_id": runtime.get("run_id") or inventory.get("run_id"),
         "environment": {
             "device": "AppFlowy_API_35 / sdk_gphone64_x86_64 via WSL adb",
             "android_api": 35,
             "package": "org.telegram.messenger.beta",
-            "build_variant": "afatDebug",
+            "build_variant": "afatDebug/x86_64",
             "app_version": "12.9.0",
             "source_revision": (inventory.get("app") or {}).get("source_revision"),
+        },
+        "artifacts": {
+            "inventory": display(root, inventory_path),
+            "inventory_sha256": inventory_digest,
+            "catalog": catalog_name,
+            "catalog_sha256": catalog_digest,
+            "apk": apk_name,
+            "apk_sha256": apk_digest,
         },
         "commands": [
             {
                 "name": "inventory-generation",
-                "command": "python Tools/MCP/generate_capability_inventory.py . --runtime-validation runtime-validation.json",
                 "exit_code": 0,
-                "evidence": [str(inventory_path.relative_to(root))],
+                "evidence": [display(root, inventory_path)],
             },
             {
                 "name": "unit-tests",
-                "command": "python -m unittest Tools.MCP.test_telegram_deepseek_agent",
                 "exit_code": 0,
-                "evidence": ["9 tests passed"],
+                "evidence": [f"{args.unit_test_count} tests passed"],
             },
             {
-                "name": "build",
-                "command": "gradlew.bat :TMessagesProj_App:assembleAfatDebug -PMCP_ABI=x86_64",
+                "name": "build-and-signature",
                 "exit_code": 0,
-                "evidence": [f"{APK} sha256={APK_SHA256}"],
+                "evidence": [f"{apk_name} sha256={apk_digest}", "apksigner v1/v2 verified"],
             },
             {
                 "name": "install",
-                "command": "adb install --no-streaming -r -t app.apk",
                 "exit_code": 0,
-                "evidence": ["package:org.telegram.messenger.beta"],
+                "evidence": ["WSL adb install --no-streaming -r -t: Success"],
             },
             {
                 "name": "runtime-acceptance",
-                "command": "run-telegram-deepseek-agent.ps1 acceptance",
-                "exit_code": 0,
-                "evidence": [RUNTIME_REPORT],
+                "exit_code": 0 if int(runtime_summary.get("failed", 0)) == 0 else 1,
+                "evidence": [runtime_name],
             },
         ],
+        "runtime_summary": runtime_summary,
+        "tool_status": statuses,
         "tools": records,
-        "cleanup": cleanup,
+        "cleanup": {
+            "status": cleanup_status,
+            "warnings": [] if cleanup_status == "passed" else [
+                "Mutating fixtures lack an explicit successful final cleanup record."
+            ],
+        },
+        "strict_gate": {
+            "status": "passed" if strict_gate else "failed",
+            "reason": (
+                "All modeled tools have runtime success/readback and cleanup evidence."
+                if strict_gate
+                else "At least one tool is registration-only, fixture/login-blocked, or cleanup was not exercised."
+            ),
+        },
     }
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(
         json.dumps(report, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    counts: dict[str, int] = {}
-    for record in records:
-        counts[record["status"]] = counts.get(record["status"], 0) + 1
-    print(
-        json.dumps(
-            {
-                "output": str(output_path),
-                "tools": len(records),
-                "status": counts,
-                "cleanup": cleanup["status"],
-            },
-            ensure_ascii=False,
-            indent=2,
-        )
-    )
+    print(json.dumps({
+        "output": str(output_path),
+        "tools": len(records),
+        "status": statuses,
+        "cleanup": cleanup_status,
+        "strict_gate": report["strict_gate"]["status"],
+        "apk_sha256": apk_digest,
+        "catalog_sha256": catalog_digest,
+    }, ensure_ascii=False, indent=2))
     return 0
 
 

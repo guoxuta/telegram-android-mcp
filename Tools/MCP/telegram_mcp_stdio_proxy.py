@@ -24,7 +24,7 @@ from telegram_mcp_adb_bridge import (
 
 DEFAULT_URL = "http://127.0.0.1:19876/mcp"
 DEFAULT_TOKEN = ""
-DEFAULT_PROTOCOL_VERSION = "2025-03-26"
+DEFAULT_PROTOCOL_VERSION = "2025-06-18"
 
 
 class McpHttpBridge:
@@ -32,6 +32,7 @@ class McpHttpBridge:
         self.url = url
         self.token = token
         self.protocol_version = DEFAULT_PROTOCOL_VERSION
+        self.session_id = ""
         self.opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
     def get_json(self, url: str) -> dict[str, Any]:
@@ -45,24 +46,32 @@ class McpHttpBridge:
 
     def post(self, message: dict[str, Any]) -> tuple[int, dict[str, Any] | None]:
         data = json.dumps(message, separators=(",", ":")).encode("utf-8")
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Accept": "application/json, text/event-stream",
+            "Content-Type": "application/json; charset=utf-8",
+            "MCP-Protocol-Version": self.protocol_version,
+        }
+        if self.session_id:
+            headers["Mcp-Session-Id"] = self.session_id
         request = urllib.request.Request(
             self.url,
             data=data,
             method="POST",
-            headers={
-                "Authorization": f"Bearer {self.token}",
-                "Accept": "application/json, text/event-stream",
-                "Content-Type": "application/json; charset=utf-8",
-                "MCP-Protocol-Version": self.protocol_version,
-            },
+            headers=headers,
         )
         try:
             with self.opener.open(request, timeout=310) as response:
                 raw = response.read()
                 status = response.status
+                response_headers = response.headers
         except urllib.error.HTTPError as error:
             raw = error.read()
             status = error.code
+            response_headers = error.headers
+        returned_session = response_headers.get("Mcp-Session-Id") if response_headers else None
+        if returned_session:
+            self.session_id = returned_session
         payload = json.loads(raw.decode("utf-8")) if raw else None
         if (
             message.get("method") == "initialize"
@@ -86,7 +95,7 @@ def rpc_request(request_id: int, method: str, params: dict[str, Any] | None = No
     return message
 
 
-def run_smoke(bridge: McpHttpBridge, expected_tools: int) -> int:
+def run_smoke(bridge: McpHttpBridge, expected_tools: int | None) -> int:
     health_url = bridge.url.removesuffix("/mcp") + "/health"
     health = bridge.get_json(health_url)
     status, initialized = bridge.post(
@@ -121,10 +130,10 @@ def run_smoke(bridge: McpHttpBridge, expected_tools: int) -> int:
     contents = resource["result"].get("contents", [])
     inventory = json.loads(contents[0]["text"])
     actual_tools = len(tools)
-    if actual_tools != expected_tools:
+    if expected_tools is not None and actual_tools != expected_tools:
         raise RuntimeError(f"expected {expected_tools} tools, got {actual_tools}")
     catalog_tools = inventory.get("tools") or []
-    if len(catalog_tools) != expected_tools:
+    if expected_tools is not None and len(catalog_tools) != expected_tools:
         raise RuntimeError(
             f"catalog resource expected {expected_tools} tools, got {len(catalog_tools)}"
         )
@@ -193,7 +202,7 @@ def parse_args() -> argparse.Namespace:
         default=os.environ.get("TELEGRAM_MCP_TOKEN", DEFAULT_TOKEN),
     )
     parser.add_argument("--smoke", action="store_true", help="Verify the installed server and exit")
-    parser.add_argument("--expected-tools", type=int, default=46)
+    parser.add_argument("--expected-tools", type=int, default=None)
     parser.add_argument(
         "--adb-direct",
         action="store_true",

@@ -17,6 +17,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
+import uuid
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -52,7 +53,6 @@ DEFAULT_CATALOG_MARKDOWN = REPOSITORY_ROOT / "agent" / "TELEGRAM_MCP_AGENT_CATAL
 DEFAULT_SESSION_DIR = REPOSITORY_ROOT / ".cache" / "telegram-agent" / "sessions"
 DEFAULT_DEEPSEEK_BASE_URL = "https://api.deepseek.com"
 DEFAULT_DEEPSEEK_MODEL = "deepseek-v4-flash"
-EXPECTED_TOOL_COUNT = 46
 
 
 class AgentError(RuntimeError):
@@ -681,7 +681,7 @@ class TelegramToolCatalog:
                     f"| `{descriptor.name}` | {descriptor.tier} | {descriptor.risk} | {summary} |"
                 )
             lines.append("")
-        return "\n".join(lines)
+        return "\n".join(lines).rstrip()
 
 
 SECRET_REFERENCE = re.compile(r"^\$\{ENV:([A-Za-z_][A-Za-z0-9_]*)\}$")
@@ -1039,19 +1039,86 @@ class TelegramGateway:
                 if not isinstance(calls, list):
                     raise AgentError("telegram_batch.calls must be an array")
                 results = []
+                failed_index: int | None = None
                 for index, call in enumerate(calls):
-                    if not isinstance(call, dict):
-                        item = {"ok": False, "error": "batch item must be an object"}
-                    else:
-                        item = self._call_real_tool(
-                            str(call.get("name", "")),
-                            call.get("arguments") or {},
-                            str(call.get("purpose", "")),
-                        )
-                    results.append({"index": index, "result": item})
+                    gateway_operation_id = f"batch-{uuid.uuid4().hex}"
+                    try:
+                        if not isinstance(call, dict):
+                            item = {
+                                "ok": False,
+                                "error": {
+                                    "code": "invalid_batch_item",
+                                    "message": "batch item must be an object",
+                                    "retryable": False,
+                                },
+                            }
+                        else:
+                            raw_item_arguments = call.get("arguments") or {}
+                            if not isinstance(raw_item_arguments, dict):
+                                raise AgentError("batch item arguments must be an object")
+                            item = self._call_real_tool(
+                                str(call.get("name", "")),
+                                raw_item_arguments,
+                                str(call.get("purpose", "")),
+                            )
+                    except Exception as error:  # Preserve all earlier effects and results.
+                        item = {
+                            "ok": False,
+                            "error": {
+                                "code": "batch_transport_or_gateway_error",
+                                "message": str(error),
+                                "retryable": False,
+                                "details": {
+                                    "outcome": "unknown",
+                                    "read_before_retry": True,
+                                },
+                            },
+                        }
+                    data = item.get("data") if isinstance(item, dict) else None
+                    error_data = item.get("error") if isinstance(item, dict) else None
+                    operation_id = (
+                        data.get("operation_id")
+                        if isinstance(data, dict)
+                        else None
+                    ) or (
+                        (error_data.get("details") or {}).get("operation_id")
+                        if isinstance(error_data, dict)
+                        and isinstance(error_data.get("details"), dict)
+                        else None
+                    ) or gateway_operation_id
+                    results.append(
+                        {
+                            "index": index,
+                            "operation_id": operation_id,
+                            "result": item,
+                        }
+                    )
                     if arguments.get("stopOnError", True) and not item.get("ok", False):
+                        failed_index = index
                         break
-                result = {"ok": all(item["result"].get("ok", False) for item in results), "results": results}
+                if failed_index is None:
+                    failed_index = next(
+                        (
+                            entry["index"]
+                            for entry in results
+                            if not entry["result"].get("ok", False)
+                        ),
+                        None,
+                    )
+                result = {
+                    "ok": failed_index is None and len(results) == len(calls),
+                    "results": results,
+                    "completed_count": len(results),
+                    "succeeded_count": sum(
+                        bool(entry["result"].get("ok", False)) for entry in results
+                    ),
+                    "failed_index": failed_index,
+                    "stopped_early": len(results) < len(calls),
+                    "safe_to_replay_entire_batch": False if results else True,
+                    "replay_guidance": (
+                        "Inspect each result and operation_id; independently read back any failed or unknown write before retrying only that item."
+                    ),
+                }
             elif name == "telegram_get_context":
                 result = self.context(arguments)
             else:
@@ -1624,11 +1691,16 @@ def require_api_key(args: argparse.Namespace) -> str:
 def run_doctor(args: argparse.Namespace) -> dict[str, Any]:
     session, catalog, _ = create_runtime(args)
     inventory = session.inventory()
+    expected_tool_count = len(inventory.get("tools") or [])
     result: dict[str, Any] = {
-        "ok": len(session.tools) == EXPECTED_TOOL_COUNT,
+        "ok": (
+            expected_tool_count > 0
+            and len(session.tools) == expected_tool_count
+            and len(catalog.descriptors) == expected_tool_count
+        ),
         "mcp": {
             "tools": len(session.tools),
-            "expected": EXPECTED_TOOL_COUNT,
+            "expected": expected_tool_count,
             "protocolVersion": session.server_info.get("protocolVersion"),
             "catalog": {
                 "schemaVersion": inventory.get("schema_version"),
@@ -1814,10 +1886,10 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=REPOSITORY_ROOT
         / ".mcp-work"
-        / "telegram-mcp-20260729"
-        / "runtime-validation.json",
+        / "telegram-mcp-20260801"
+        / f"runtime-validation-{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}.json",
     )
-    catalog = subparsers.add_parser("catalog", help="Export the enriched 46-tool catalog")
+    catalog = subparsers.add_parser("catalog", help="Export the enriched Telegram MCP tool catalog")
     catalog.add_argument("--json", type=Path, default=DEFAULT_CATALOG_JSON)
     catalog.add_argument("--markdown", type=Path, default=DEFAULT_CATALOG_MARKDOWN)
     tools = subparsers.add_parser("tools", help="Search the enriched catalog without using DeepSeek")

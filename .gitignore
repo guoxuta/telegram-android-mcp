@@ -17,4 +17,4 @@ TMessagesProj_AppHuawei/afat/
 # Local MCP tooling artifacts
 **/__pycache__/
 *.py[cod]
-.mcp-work/**/logs/
+.mcp-work/
